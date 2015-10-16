@@ -23,15 +23,24 @@ draw = ImageDraw.Draw(PIL_image)
 
 
 def quit(event):
+    '''
+    Event function to quit the drawer window
+    '''
     sys.exit()
    
 def clear(event):
+    '''
+    Event function to clear the drawing canvas (draw white fill)
+    '''
     global drawing_area, PIL_image, draw
     drawing_area.delete("all")
     PIL_image = Image.new("1", (300, 300), "white")
     draw = ImageDraw.Draw(PIL_image)
 
 def drag(event):
+    '''
+    Event function to start drawing on canvas when left mouse drag happens
+    '''
     global drawing_area, x,y, count, draw
     newx,newy=event.x,event.y
     if x is None:
@@ -40,14 +49,20 @@ def drag(event):
     count+=1
     sys.stdout.write("\revent count %d"%count)
     drawing_area.create_line((x,y,newx,newy), width=5, smooth=True)
-    draw.line((x,y,newx,newy), width=3)
+    draw.line((x,y,newx,newy), width=10)
     x,y=newx,newy
 
 def drag_end(event):
+    '''
+    Event function to stop drawing on canvas when mouse drag stops
+    '''
     global x,y
     x,y=None,None
    
 def save(event):
+    '''
+    Event function to save the current canvas image in JPG format
+    '''
     global PIL_image, image_name, image_cnt
     image_cnt += 1
     file_name = image_name + str(image_cnt) + ".jpg"

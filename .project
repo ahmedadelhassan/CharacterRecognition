@@ -14,4 +14,11 @@
 	<natures>
 		<nature>org.python.pydev.pythonNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>drawer.py</name>
+			<type>1</type>
+			<location>I:/eclipse_workspace/CharacterRecognition/drawer.py</location>
+		</link>
+	</linkedResources>
 </projectDescription>
