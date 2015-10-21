@@ -53,3 +53,17 @@ class FreemanEncoder(object):
         contours_main = max(contours, key=len)
         
         return contours_main
+    
+    def encode_freeman_dataset(self, images_dataset):
+        '''
+        Encode images dataset (given as a dictionary where keys are classes, 
+        and values are the arrays of images, into a freeman code dictionary of 
+        the same structure
+        '''
+        freeman_code_dict = dict((key, []) for key in images_dataset.keys())
+        for key in images_dataset:
+            for image in images_dataset[key]:
+                image_freeman = self.encode_freeman(image)
+                freeman_code_dict[key].append(image_freeman)
+                
+        return freeman_code_dict
