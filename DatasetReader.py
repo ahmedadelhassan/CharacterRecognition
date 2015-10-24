@@ -61,7 +61,7 @@ class DatasetReader(object):
 
     def read_dataset_images(self, dataset_path):
         images = {}
-        for root, dirnames, filenames in os.walk(dataset_path):
+        for root, _, filenames in os.walk(dataset_path):
             for filename in fnmatch.filter(filenames, '*.jpg'):
                 if 'posix' in os.name:
                     character_class = root.split("/")[-1]
@@ -75,6 +75,17 @@ class DatasetReader(object):
                     images[character_class] = [image]
         
         return images
+    
+    def gen_labelled_arrays(self, dataset_dict):
+        labelled_arrays = []
+        codes_list = dataset_dict.items()
+        for tup in codes_list:
+            for code in tup[1]:
+                labelled_arrays.append((tup[0],code))
+                
+        codes = numpy.array([x[1] for x in labelled_arrays])
+        labels = numpy.array([y[0] for y in labelled_arrays])
+        return labelled_arrays, codes, labels
     
     def save_dataset_binary(self, dataset):
         Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
