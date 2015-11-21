@@ -15,11 +15,11 @@ The dataset has to have the following heirarchy:
 
 import os
 import numpy
-import fnmatch
 from Tkinter import Tk
 from tkFileDialog import asksaveasfile
 from PIL import Image
 from skimage.filters import threshold_otsu
+import matplotlib.pyplot as plt
 
 class DatasetReader(object):
     '''
@@ -42,10 +42,12 @@ class DatasetReader(object):
                 "bool": matrix is bool with True and False
         '''
         #read image and convert to matrix
-        image = Image.open(image_file)
+        image = Image.open(image_file).convert('L')
+#         image = image.resize((100,100), Image.LANCZOS)
         image_array = image.getdata()
-        
+               
         image_array = numpy.array(image_array).astype(numpy.uint8).reshape((image.size[0],image.size[1]))
+#         print image_array.shape
         
         #Threshold the image according to array_type parameter
         if array_type == "bool":
@@ -56,23 +58,25 @@ class DatasetReader(object):
             image_array[image_array < 128] = 1
             image_array[image_array >= 128] = 0
             image_array[image_array == 1] = 255
-        
+#         plt.imshow(image_array)
+#         plt.show()
         return image_array
 
     def read_dataset_images(self, dataset_path):
         images = {}
         for root, _, filenames in os.walk(dataset_path):
-            for filename in fnmatch.filter(filenames, '*.jpg'):
-                if 'posix' in os.name:
-                    character_class = root.split("/")[-1]
-                else:
-                    character_class = root.split("\\")[-1]
-                try:
-                    image = self.read_img_bw(os.path.join(root, filename))
-                    images[character_class].append(image)
-                except:
-                    image = self.read_img_bw(os.path.join(root, filename))
-                    images[character_class] = [image]
+            for filename in filenames:
+                if filename.endswith(('.jpg', '.jpeg', '.gif', '.png')):
+                    if 'posix' in os.name:
+                        character_class = root.split("/")[-1]
+                    else:
+                        character_class = root.split("\\")[-1]
+                    try:
+                        image = self.read_img_bw(os.path.join(root, filename))
+                        images[character_class].append(image)
+                    except KeyError:
+                        image = self.read_img_bw(os.path.join(root, filename))
+                        images[character_class] = [image]
         
         return images
     
@@ -83,9 +87,9 @@ class DatasetReader(object):
             for code in tup[1]:
                 labelled_arrays.append((tup[0],code))
                 
-        codes = numpy.array([x[1] for x in labelled_arrays])
+        arrays = numpy.array([x[1] for x in labelled_arrays])
         labels = numpy.array([y[0] for y in labelled_arrays])
-        return labelled_arrays, codes, labels
+        return labelled_arrays, arrays, labels
     
     def save_dataset_binary(self, dataset):
         Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing

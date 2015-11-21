@@ -3,11 +3,14 @@ Created on Oct 22, 2015
 
 @author: tho
 '''
-import nltk,editdistance,random, math, operator
+import editdistance, random, operator, os
 import numpy as np
 from DatasetReader import DatasetReader
 from FreemanEncoder import FreemanEncoder
-from sklearn.neighbors import KNeighborsRegressor
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import cross_validation
+from pyxdameraulevenshtein import damerau_levenshtein_distance as edit_dist
+from django.contrib.gis.geos.base import numpy
 
 
 class KNN(object):
@@ -21,6 +24,7 @@ class KNN(object):
         '''
         self.dsr = DatasetReader()
         self.fenc = FreemanEncoder()
+        self.training_data = []
 
     def generate_labelled_sequences(self, freeman_codes_dict):
         labelled_sequences = []
@@ -43,7 +47,7 @@ class KNN(object):
         # Get the list of nearest neighbors to a test instance
         distances =[]
         for i in range(len(training)-1):
-            dist = editdistance.eval(test_instance, training[i][1])
+            dist = edit_dist(test_instance, training[i][1])
             distances.append((training[i], dist))
 
         distances.sort(key=operator.itemgetter(1))
@@ -70,7 +74,8 @@ class KNN(object):
     def evaluation(self, training, test):
         # Evaluate the accuracy of knn
         correct_count = 0
-        k = int(math.ceil(len(training)/10))
+#         k = int(math.ceil(len(training)/10))
+        k = 1
         for test_data in test:
             neighbors = self.get_neighbors(training, test_data[1], k)
             label = self.get_label(neighbors)
@@ -79,35 +84,98 @@ class KNN(object):
 
         print (float(correct_count)/len(test))*100
 
-    def knn_train(self, dataset_path):
+    def knn_train(self, dataset_path, train_test_split=0.8):
         dataset = self.dsr.read_dataset_images(dataset_path)
         freeman_codes_dict = self.fenc.encode_freeman_dataset(dataset)
         labelled_sequences = self.generate_labelled_sequences(freeman_codes_dict)
         training = []
         test = []
         # print labelled_sequences
-        self.prepare_data(labelled_sequences,training,test)
-        print "Training:" + len(training).__str__()
-        print "Test:" + len(test).__str__()
+        self.prepare_data(labelled_sequences,training,test, split=train_test_split)
+        self.training_data = training
+        
+        if train_test_split != 1.0:
+            print "Training:" + len(training).__str__()
+            print "Test:" + len(test).__str__()
+            self.evaluation(training,test)
+        
+    def knn_predict_one(self, image, k=1):
+        if os.path.isfile(image):
+            image_array = self.dsr.read_img_bw(image)
+            test = self.fenc.encode_freeman(image_array)
+        else:
+            test = image
+        
+        # Try to find the nearest neighbors of the first sequences in training
+        neighbors = self.get_neighbors(self.training_data, test, k)
+        label = self.get_label(neighbors)
+        return label
 
-        # Because we need to find 10 clusters so the number of k is the number of training is divided by 10
-        k = int(math.ceil(len(training)/10))
-        # print k
+class KNN_strings(object):
+    '''
+    classdocs
+    '''
 
-        # # This instance's label is 5
-        # intance = '66666677667767766707557777711001333333233233233223322211211211111111101100000077117777076777767766666555570770000110110001100013311112222332222222222222222222211222234445666666666666666666666666666677654445544554322233223323335531133234455311343355333344445545775334455555654565565555'
-        # # Try to find the nearest neighbors of the first sequences in training
-        # neighbors = self.get_neighbors(training, intance, k)
-        # label = self.get_label(neighbors)
-        # print label
-        self.evaluation(training,test)
+    def __init__(self, n_neighbors=1):
+        '''
+        Constructor
+        '''
+        self.dsr = DatasetReader()
+        self.fenc = FreemanEncoder()
+        self.data = []
+        self.knn = KNeighborsClassifier(n_neighbors=n_neighbors, algorithm='auto', metric=self.lev_metric)
+        
+    def lev_metric(self, x, y):
+        i, j = int(x[0]), int(y[0])     # extract indices
+#         if self.data[i] == self.data[j]:
+#             print self.data[i], self.data[j], edit_dist(self.data[i], self.data[j])
+        return edit_dist(self.data[i], self.data[j])
+    
+    def knn_train(self, dataset, cv=1, datasplit=0.7):
+        
+        images_dataset= self.dsr.read_dataset_images(dataset)
+        freeman_code_dict = self.fenc.encode_freeman_dataset(images_dataset)
+        _, codes, labels = self.dsr.gen_labelled_arrays(freeman_code_dict)
+        
+        self.data = codes
+        
+        X = np.arange(len(self.data)).reshape(-1, 1)
+        
+        if cv <= 1:
+            self.knn.fit(X, labels)
+        elif cv > 1:
+            cv_result = cross_validation.cross_val_score(self.knn, X, labels, cv=cv)
+            print cv_result
+            
+        print 'Training Done!'
+            
+    def knn_predict(self, test_data, score=False):
+        images_dataset= self.dsr.read_dataset_images(test_data)
+        freeman_code_dict = self.fenc.encode_freeman_dataset(images_dataset)
+        _, codes, labels = self.dsr.gen_labelled_arrays(freeman_code_dict)
+        
+        X_pred = np.arange(len(codes)).reshape(-1, 1)
+        predictions = self.knn.predict(X_pred)
+            
+        if score == True:
+            accuracy = self.knn.score(X_pred, labels)
+            print "Test Accuracy: ", accuracy
+        
+        return predictions
+    
+    def knn_predict_one(self, test_image):
+        image_code = self.fenc.encode_freeman(test_image)
+        print image_code
+        data = [image_code]
+        X_pred = np.arange(len(data)).reshape(-1, 1)
+        prediction = self.knn.predict(X_pred)
+    
+        return prediction
 
 
-
-knn = KNN()
-for x in range(30):
-    knn.knn_train('/home/thovo/PycharmProjects/CharacterRecognition/digits_dataset')
-    print '==================================================================================='
-
-# data = '66700110011011110111111111111121011111111111211111121111112111111112111111211112111121122111766666677667766677666776666776667766677666667766666776666677666667766666677667110122332222223322222332222233222223322222332223322233222332222332223322223322223322333334565565565565566556555555655555555655555565555556555555555555555555555555555555555455577533445545'
-# print tknn.predict(['66700011011000110001176555555557777711111112111011133223444445544444455445555445'])
+# # knn = KNN_strings(n_neighbors=1)
+# knn = KNN()
+# for x in range(1):
+#     knn.knn_train('I:/eclipse_workspace/CharacterRecognition/teams_dataset', 1.0)
+#     print knn.knn_predict_one('I:/eclipse_workspace/CharacterRecognition/omar_dataset/4/canvas_1.jpg')
+#     print '==================================================================================='
