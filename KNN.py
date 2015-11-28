@@ -3,14 +3,13 @@ Created on Oct 22, 2015
 
 @author: tho
 '''
-import editdistance, random, operator, os
+import random, operator, os
 import numpy as np
 from DatasetReader import DatasetReader
 from FreemanEncoder import FreemanEncoder
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import cross_validation
 from pyxdameraulevenshtein import damerau_levenshtein_distance as edit_dist
-from django.contrib.gis.geos.base import numpy
 
 
 class KNN(object):
