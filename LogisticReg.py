@@ -39,7 +39,7 @@ class LogisticReg():
         {'penalty': 'l1', 'C': 10}
         0.97
         """
-        self.learning_model = LogisticRegression()
+        self.learning_model = LogisticRegression(multi_class='multinomial', penalty = l1, C= 10)
     
     def get_data(self, dataset_path = "./teams_dataset"):
         data_dict = self.reader.read_dataset_images(dataset_path)
@@ -92,7 +92,7 @@ class LogisticReg():
 #        tuned_parameters = {'n_estimators':[10,20],
 #                            'criterion':['gini', 'entropy'],
 #                            'max_depth':[5,10]}
-        clf = GridSearchCV(LogisticRegression(), tuned_parameters, cv=5)
+        clf = GridSearchCV(LogisticRegression(multi_class='multinomial'), tuned_parameters, cv=5)
         clf.fit(X_train, y_train)
         
         print clf.best_params_
