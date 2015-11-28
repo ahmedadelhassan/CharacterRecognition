@@ -12,6 +12,7 @@ combobox = 'kNN'
 combobox2 = '0'
 save_dir = './test_dataset/'
 thumbnails_path = './thumbnails'
+training_dataset = './teams_dataset'
 
 try:
     from Tkinter import *

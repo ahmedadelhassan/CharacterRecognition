@@ -25,6 +25,9 @@ from FreemanEncoder import FreemanEncoder
 from PIL import Image, ImageDraw
 import KNN
 import HMM
+import NaiveBayes
+import RandomForests
+import TestClassifier
 
 def vp_start_gui():
     '''Starting point when module is the main routine.'''
@@ -84,9 +87,12 @@ class New_Toplevel_1:
         self.x = None
         self.y = None
         
-        self.knn = KNN.KNN()
         self.fenc = FreemanEncoder()
-
+        self.knn = KNN.KNN()
+        self.HMM = HMM.HMM()
+        self.NaiveBayes = NaiveBayes.NaiveBayes()
+        self.RandomForests = RandomForests.RandomForests()
+        self.TC = TestClassifier.TestClassifier()
 
         self.Clear = Button(master)
         self.Clear.place(relx=0.44, rely=0.14, height=24, width=78)
@@ -164,7 +170,7 @@ class New_Toplevel_1:
         self.TCombobox1 = ttk.Combobox(master)
         self.TCombobox1.place(relx=0.41, rely=0.39, relheight=0.06
                 , relwidth=0.16)
-        self.value_list = ['kNN','HMM','RandomForest',]
+        self.value_list = ['kNN','HMM','RandomForests','NaiveBayes', 'Test']
         self.TCombobox1.configure(values=self.value_list)
         self.TCombobox1.configure(textvariable=CharRecognitionGUI_support.combobox)
         self.TCombobox1.configure(takefocus="")
@@ -274,19 +280,51 @@ class New_Toplevel_1:
             self.Label1['text'] = 'Please redraw the image'
         self.Label1['text'] = str(code)
         
-        if self.TCombobox1.get() == 'kNN':
-            self.knn.knn_train('I:/eclipse_workspace/CharacterRecognition/teams_dataset', 1.0)
-            pred = self.knn.knn_predict_one(code, 3)
+        if self.TCombobox1.get() == '':
+            pass
+        
+        elif self.TCombobox1.get() == 'kNN':
+            self.knn.knn_train(CharRecognitionGUI_support.training_dataset, 1.0)
+            pred = self.knn.knn_predict_one(code, 1)
             pred_thumb = self.thumbnails[pred[0]]
             self._image = PhotoImage(file=pred_thumb)
             self.Thumbnail.configure(image=self._image)
             
+        elif self.TCombobox1.get() == 'HMM':
+            self.HMM.hmm_train(CharRecognitionGUI_support.training_dataset)
+            pred = self.HMM.hmm_predict_one(code)
+            pred_thumb = self.thumbnails[pred[0]]
+            self._image = PhotoImage(file=pred_thumb)
+            self.Thumbnail.configure(image=self._image)
+                    
+        elif self.TCombobox1.get() == 'NaiveBayes':
+            image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            self.NaiveBayes.GaussianNB_train(CharRecognitionGUI_support.training_dataset)
+            pred = self.NaiveBayes.GaussianNB_predict_one(image)
+            pred_thumb = self.thumbnails[pred[0]]
+            self._image = PhotoImage(file=pred_thumb)
+            self.Thumbnail.configure(image=self._image)
+        
+        elif self.TCombobox1.get() == 'RandomForests':
+            image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            self.RandomForests.training(CharRecognitionGUI_support.training_dataset)
+            pred = self.RandomForests.predict(image)
+            pred_thumb = self.thumbnails[pred[0]]
+            self._image = PhotoImage(file=pred_thumb)
+            self.Thumbnail.configure(image=self._image)
+        
+        elif self.TCombobox1.get() == 'Test':
+            image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            self.TC.training(CharRecognitionGUI_support.training_dataset)
+            pred = self.TC.predict(image)
+            pred_thumb = self.thumbnails[pred[0]]
+            self._image = PhotoImage(file=pred_thumb)
+            self.Thumbnail.configure(image=self._image)
+        
         else:
             self.Label1['text'] = 'Not Implemented yet'
 
 
 if __name__ == '__main__':
     vp_start_gui()
-
-
 
