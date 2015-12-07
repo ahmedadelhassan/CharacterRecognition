@@ -6,7 +6,6 @@ Created on Oct 19, 2015
 
 import numpy
 import os
-from seqlearn.hmm import MultinomialHMM
 from DatasetReader import DatasetReader
 from FreemanEncoder import FreemanEncoder
 from sklearn import cross_validation
@@ -23,7 +22,6 @@ class HMM(object):
         '''
         self.dsr = DatasetReader()
         self.fenc = FreemanEncoder()
-        self.mhmm = MultinomialHMM()
         self.nltkhmm = HiddenMarkovModelTrainer()
         self.model = ''
         
@@ -49,21 +47,12 @@ class HMM(object):
     def hmm_train(self, dataset_path):
         dataset = self.dsr.read_dataset_images(dataset_path)
         freeman_codes_dict = self.fenc.encode_freeman_dataset(dataset)
-#         freeman_histogram = self.fenc.gen_bagofwords_dict(freeman_codes_dict)
          
         labeled_symbols, labeled_sequence, codes, labels = self.generate_labelled_sequences(freeman_codes_dict)
         
-#         codes = [list(map(double,list(x))) for x in codes]
         self.model = self.nltkhmm.train(labeled_symbols)
         
         training_score = self.model.evaluate(labeled_symbols)
-        
-#         # Convert training data to compatible HMM structure
-#         codes, indices = numpy.unique(codes, return_inverse=True)
-#         X = (indices.reshape(-1, 1) == numpy.arange(len(codes))).astype(int) # -1 to infer value from original array
-        
-        # Train the HMM with data and labels
-#         trained_hmm = self.mhmm.fit(codes, labels, [8])
         
         return training_score
     
