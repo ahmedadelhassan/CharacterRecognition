@@ -26,7 +26,9 @@ from PIL import Image, ImageDraw
 import KNN
 import HMM
 import NaiveBayes
-import RandomForests
+import RandomForest
+import svm
+import LogisticReg
 import TestClassifier
 
 def vp_start_gui():
@@ -77,8 +79,23 @@ class New_Toplevel_1:
         self.style.map('.',background=
             [('selected', _compcolor), ('active',_ana2color)])
         master.configure(background="#d9d9d9")
-        master.configure(highlightbackground="#d9d9d9")
-        master.configure(highlightcolor="black")
+
+
+        self.style.configure('TNotebook.Tab', background=_bgcolor)
+        self.style.configure('TNotebook.Tab', foreground=_fgcolor)
+        self.style.map('TNotebook.Tab', background=
+            [('selected', _compcolor), ('active',_ana2color)])
+        self.TNotebook1 = ttk.Notebook(master)
+        self.TNotebook1.place(relx=0.02, rely=0.02, relheight=0.95
+                , relwidth=0.96)
+        self.TNotebook1.configure(width=574)
+        self.TNotebook1.configure(takefocus="")
+        self.TNotebook1_predict = ttk.Frame(self.TNotebook1)
+        self.TNotebook1.add(self.TNotebook1_predict, padding=3)
+        self.TNotebook1.tab(0, text="Recognize",underline="-1",)
+        self.TNotebook1_train = ttk.Frame(self.TNotebook1)
+        self.TNotebook1.add(self.TNotebook1_train, padding=3)
+        self.TNotebook1.tab(1, text="Train",underline="-1",)
         
         #user defined variables
         self.thumbnails = self.load_thumbnails(CharRecognitionGUI_support.thumbnails_path)
@@ -91,10 +108,12 @@ class New_Toplevel_1:
         self.knn = KNN.KNN()
         self.HMM = HMM.HMM()
         self.NaiveBayes = NaiveBayes.NaiveBayes()
-        self.RandomForests = RandomForests.RandomForests()
+        self.RandomForests = RandomForest.RandomForests()
+        self.SVM = svm.SVM_SVC()
+        self.LogisticReg = LogisticReg.LogisticReg()
         self.TC = TestClassifier.TestClassifier()
 
-        self.Clear = Button(master)
+        self.Clear = Button(self.TNotebook1_predict)
         self.Clear.place(relx=0.44, rely=0.14, height=24, width=78)
         self.Clear.configure(activebackground="#d9d9d9")
         self.Clear.configure(activeforeground="#000000")
@@ -104,10 +123,10 @@ class New_Toplevel_1:
         self.Clear.configure(highlightbackground="#d9d9d9")
         self.Clear.configure(highlightcolor="black")
         self.Clear.configure(pady="0")
-        self.Clear.configure(text='''Clear''')
+        self.Clear.configure(text='''Clear Canvas''')
         self.Clear.bind("<Button-1>",self.clear)
 
-        self.Canvas1 = Canvas(master)
+        self.Canvas1 = Canvas(self.TNotebook1_predict)
         self.Canvas1.place(relx=0.01, rely=0.02, relheight=0.61, relwidth=0.35)
         self.Canvas1.configure(background="white")
         self.Canvas1.configure(borderwidth="2")
@@ -121,7 +140,7 @@ class New_Toplevel_1:
         self.Canvas1.bind("<B1-Motion>",self.drag)
         self.Canvas1.bind("<ButtonRelease-1>",self.drag_end)
 
-        self.Save = Button(master)
+        self.Save = Button(self.TNotebook1_predict)
         self.Save.place(relx=0.5, rely=0.04, height=24, width=77)
         self.Save.configure(activebackground="#d9d9d9")
         self.Save.configure(activeforeground="#000000")
@@ -134,7 +153,7 @@ class New_Toplevel_1:
         self.Save.configure(text='''Save''')
         self.Save.bind("<Button-1>",self.save)
 
-        self.Quit = Button(master)
+        self.Quit = Button(self.TNotebook1_predict)
         self.Quit.place(relx=0.44, rely=0.24, height=24, width=77)
         self.Quit.configure(activebackground="#d9d9d9")
         self.Quit.configure(activeforeground="#000000")
@@ -147,7 +166,7 @@ class New_Toplevel_1:
         self.Quit.configure(text='''Quit''')
         self.Quit.bind("<Button-1>",self.quit)
 
-        self.Frame1 = Frame(master)
+        self.Frame1 = Frame(self.TNotebook1_predict)
         self.Frame1.place(relx=0.61, rely=0.02, relheight=0.6, relwidth=0.36)
         self.Frame1.configure(relief=GROOVE)
         self.Frame1.configure(borderwidth="2")
@@ -156,26 +175,28 @@ class New_Toplevel_1:
         self.Frame1.configure(highlightbackground="#d9d9d9")
         self.Frame1.configure(highlightcolor="black")
         self.Frame1.configure(width=305)
+        
+        self.freeman_textbox = Text(self.TNotebook1_predict)
+        self.freeman_textbox.place(relx=0.01, rely=0.69, height=131, width=514)
+        self.freeman_textbox.configure(background=_bgcolor)
+        self.freeman_textbox.configure(foreground="#000000")
+        self.freeman_textbox.configure(highlightbackground="#d9d9d9")
+        self.freeman_textbox.configure(highlightcolor="black")
+        
+        self.scrollbar = Scrollbar(self.freeman_textbox)
+        self.scrollbar.pack(side=RIGHT, fill=Y)
+        self.scrollbar.config(command=self.freeman_textbox.yview)
+        self.freeman_textbox.configure(yscrollcommand=self.scrollbar.set)
 
-        self.Label1 = Label(master, wraplength=500, justify=LEFT)
-        self.Label1.place(relx=0.01, rely=0.69, height=131, width=514)
-        self.Label1.configure(activebackground="#f9f9f9")
-        self.Label1.configure(activeforeground="black")
-        self.Label1.configure(background=_bgcolor)
-        self.Label1.configure(disabledforeground="#a3a3a3")
-        self.Label1.configure(foreground="#000000")
-        self.Label1.configure(highlightbackground="#d9d9d9")
-        self.Label1.configure(highlightcolor="black")
-
-        self.TCombobox1 = ttk.Combobox(master)
-        self.TCombobox1.place(relx=0.41, rely=0.39, relheight=0.06
+        self.TCombobox1 = ttk.Combobox(self.TNotebook1_predict)
+        self.TCombobox1.place(relx=0.41, rely=0.35, relheight=0.06
                 , relwidth=0.16)
-        self.value_list = ['kNN','HMM','RandomForests','NaiveBayes', 'Test']
+        self.value_list = ['kNN (Freeman Code)','HMM (Freeman Code)','RandomForests (EFD)','NaiveBayes (RAW)', 'SVM (EFD)', 'LogisticReg (EFD)']
         self.TCombobox1.configure(values=self.value_list)
         self.TCombobox1.configure(textvariable=CharRecognitionGUI_support.combobox)
         self.TCombobox1.configure(takefocus="")
         
-        self.TCombobox2 = ttk.Combobox(master)
+        self.TCombobox2 = ttk.Combobox(self.TNotebook1_predict)
         self.TCombobox2.place(relx=0.4, rely=0.04, height=24, width=77)
         self.value_list = ['0','1','2','3','4','5','6','7','8','9',]
         self.TCombobox2.configure(values=self.value_list)
@@ -183,8 +204,8 @@ class New_Toplevel_1:
         self.TCombobox2.configure(takefocus="")
         self.TCombobox2.current(0)
         
-        self.Frame2 = Frame(master)
-        self.Frame2.place(relx=0.74, rely=0.71, relheight=0.24, relwidth=0.14)
+        self.Frame2 = Frame(self.TNotebook1_predict)
+        self.Frame2.place(relx=0.737, rely=0.715, relheight=0.26, relwidth=0.15)
         self.Frame2.configure(relief=GROOVE)
         self.Frame2.configure(borderwidth="2")
         self.Frame2.configure(relief=GROOVE)
@@ -193,7 +214,7 @@ class New_Toplevel_1:
         self.Frame2.configure(highlightcolor="black")
         self.Frame2.configure(width=150, height=150)
 
-        self.Thumbnail = Label(master)
+        self.Thumbnail = Label(self.TNotebook1_predict)
         self.Thumbnail.place(relx=0.75, rely=0.73, height=100, width=100)
         self.Thumbnail.configure(background=_bgcolor)
         self.Thumbnail.configure(disabledforeground="#a3a3a3")
@@ -203,8 +224,8 @@ class New_Toplevel_1:
         self.Thumbnail.configure(text='''Label''')
         self.Thumbnail.configure(width=94)
 
-        self.Recognize = Button(master)
-        self.Recognize.place(relx=0.44, rely=0.53, height=24, width=87)
+        self.Recognize = Button(self.TNotebook1_predict)
+        self.Recognize.place(relx=0.44, rely=0.45, height=24, width=87)
         self.Recognize.configure(activebackground="#d9d9d9")
         self.Recognize.configure(activeforeground="#000000")
         self.Recognize.configure(background=_bgcolor)
@@ -215,6 +236,19 @@ class New_Toplevel_1:
         self.Recognize.configure(pady="0")
         self.Recognize.configure(text='''Recognize''')
         self.Recognize.bind("<Button-1>",self.recognize)
+        
+        self.Clear_Results = Button(self.TNotebook1_predict)
+        self.Clear_Results.place(relx=0.44, rely=0.55, height=24, width=87)
+        self.Clear_Results.configure(activebackground="#d9d9d9")
+        self.Clear_Results.configure(activeforeground="#000000")
+        self.Clear_Results.configure(background=_bgcolor)
+        self.Clear_Results.configure(disabledforeground="#a3a3a3")
+        self.Clear_Results.configure(foreground="#000000")
+        self.Clear_Results.configure(highlightbackground="#d9d9d9")
+        self.Clear_Results.configure(highlightcolor="black")
+        self.Clear_Results.configure(pady="0")
+        self.Clear_Results.configure(text='''Clear Results''')
+        self.Clear_Results.bind("<Button-1>",self.clear_results)
 
     def load_thumbnails(self, thumbnails_path):
         images = {}
@@ -270,34 +304,46 @@ class New_Toplevel_1:
             file_name = CharRecognitionGUI_support.save_dir + self.TCombobox2.get() + '_' + str(image_cnt) + ".jpg"
         
         self.PIL_image.save(file_name)
-        self.Label1['text'] = 'SAVED!'
+        self.freeman_textbox.delete("1.0", END)
+        self.freeman_textbox.insert(END, 'SAVED!')
+        self.freeman_textbox.see(END)
+
+    def clear_results(self, event):
+        self.freeman_textbox.delete("1.0", END)
+        self._img1 = PhotoImage(file='./thumbnails/blank.gif')
+        self.Thumbnail.configure(image=self._img1)
 
     def recognize(self, event):
         image = ~numpy.array(self.PIL_image.convert('L'))
         try:
             code = self.fenc.encode_freeman(image)
         except ValueError:
-            self.Label1['text'] = 'Please redraw the image'
-        self.Label1['text'] = str(code)
+            self.freeman_textbox.delete("1.0", END)
+            self.freeman_textbox.insert(END, 'Please redraw the image')
+            self.freeman_textbox.see(END)
+        
+        self.freeman_textbox.delete("1.0", END)
+        self.freeman_textbox.insert(END, str(code))
+        self.freeman_textbox.see(END)
         
         if self.TCombobox1.get() == '':
             pass
         
-        elif self.TCombobox1.get() == 'kNN':
+        elif self.TCombobox1.get().split(" ")[0] == 'kNN':
             self.knn.knn_train(CharRecognitionGUI_support.training_dataset, 1.0)
             pred = self.knn.knn_predict_one(code, 1)
             pred_thumb = self.thumbnails[pred[0]]
             self._image = PhotoImage(file=pred_thumb)
             self.Thumbnail.configure(image=self._image)
             
-        elif self.TCombobox1.get() == 'HMM':
+        elif self.TCombobox1.get().split(" ")[0] == 'HMM':
             self.HMM.hmm_train(CharRecognitionGUI_support.training_dataset)
             pred = self.HMM.hmm_predict_one(code)
             pred_thumb = self.thumbnails[pred[0]]
             self._image = PhotoImage(file=pred_thumb)
             self.Thumbnail.configure(image=self._image)
                     
-        elif self.TCombobox1.get() == 'NaiveBayes':
+        elif self.TCombobox1.get().split(" ")[0] == 'NaiveBayes':
             image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
             self.NaiveBayes.GaussianNB_train(CharRecognitionGUI_support.training_dataset)
             pred = self.NaiveBayes.GaussianNB_predict_one(image)
@@ -305,7 +351,7 @@ class New_Toplevel_1:
             self._image = PhotoImage(file=pred_thumb)
             self.Thumbnail.configure(image=self._image)
         
-        elif self.TCombobox1.get() == 'RandomForests':
+        elif self.TCombobox1.get().split(" ")[0] == 'RandomForests':
             image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
             self.RandomForests.training(CharRecognitionGUI_support.training_dataset)
             pred = self.RandomForests.predict(image)
@@ -313,7 +359,7 @@ class New_Toplevel_1:
             self._image = PhotoImage(file=pred_thumb)
             self.Thumbnail.configure(image=self._image)
         
-        elif self.TCombobox1.get() == 'Test':
+        elif self.TCombobox1.get().split(" ")[0] == 'Test':
             image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
             self.TC.training(CharRecognitionGUI_support.training_dataset)
             pred = self.TC.predict(image)
@@ -321,8 +367,26 @@ class New_Toplevel_1:
             self._image = PhotoImage(file=pred_thumb)
             self.Thumbnail.configure(image=self._image)
         
+        elif self.TCombobox1.get().split(" ")[0] == 'SVM':
+            image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            self.SVM.training(CharRecognitionGUI_support.training_dataset)
+            pred = self.SVM.predict(image)
+            pred_thumb = self.thumbnails[pred[0]]
+            self._image = PhotoImage(file=pred_thumb)
+            self.Thumbnail.configure(image=self._image)
+        
+        elif self.TCombobox1.get().split(" ")[0] == 'LogisticReg':
+            image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            self.LogisticReg.training(CharRecognitionGUI_support.training_dataset)
+            pred = self.LogisticReg.predict(image)
+            pred_thumb = self.thumbnails[pred[0]]
+            self._image = PhotoImage(file=pred_thumb)
+            self.Thumbnail.configure(image=self._image)
+        
         else:
-            self.Label1['text'] = 'Not Implemented yet'
+            self.freeman_textbox.delete("1.0", END)
+            self.freeman_textbox.insert(END, 'Not Implemented yet')
+            self.freeman_textbox.see(END)
 
 
 if __name__ == '__main__':
