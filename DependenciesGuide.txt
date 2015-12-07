@@ -1,4 +1,4 @@
-This document will guide your through the installation process of this project:
+This document will guide your through the installation process of this project, please be patient, it will be very time-consuming:
 
 Dependencies list, your need to install manually one by one:
 
@@ -32,3 +32,8 @@ please follow these instructions below:
 8. cv2: This module stands for OpenCV, to install it, please follow the instructions below:
   a. For Ubuntu: Try with this link: http://www.samontab.com/web/2014/06/installing-opencv-2-4-9-in-ubuntu-14-04-lts/
   b. For Winsdow: http://docs.opencv.org/2.4/doc/tutorials/introduction/windows_install/windows_install.html
+9. pyxDamerauLevenshtein: Follow these steps:
+  a. Open your command/terminal
+  b. Type: sudo install pyxDamerauLevenshtein
+  c. For more information, follow this link: https://github.com/gfairchild/pyxDamerauLevenshtein
+
