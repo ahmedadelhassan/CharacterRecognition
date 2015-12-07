@@ -1,0 +1,31 @@
+This document will guide your through the installation process of this project:
+
+Dependencies list, your need to install manually one by one:
+
+1. Tkinter: usually go with your Python, how to check:
+  a. Open your command line/terminal, type python to open Python console
+  b. Type: import Tkinter # no underscore, uppercase 'T' for versions prior to V3.0 or
+           import tkinter # no underscore, lowercase 't' for V3.0 and later
+  c. Type: Tkinter._test() # note underscore in _test and uppercase 'T' for versions prior to V3.0 or
+           tkinter._test() # note underscore in _test and lowercase 'T' for V3.0 and later
+2. PIL: usually go with your Python
+3. scikit-image: Follow these steps:
+  a. Open your command/terminal
+  b. Type: pip install -U scikit-image or easy_install -U scikit-image
+  c. For more information, follow this link: http://scikit-image.org/download.html
+4. scikit-learn: Follow these steps:
+  a. Open your command/terminal
+  b. Type: pip install -U scikit-learn
+  c. For more information, follow this link: http://scikit-learn.org/stable/install.html
+5. numpy: Please first check do you have numpy in your machine by typing: import numpy in Python prompt. If you haven't,
+please follow these instructions below:
+  a. Download the source files in this link: http://www.scipy.org/scipylib/download.html
+  b. Follow the building instructions according to your OS in this link: http://www.scipy.org/scipylib/building/index.html#building
+6. matplotlib: Follow these steps:
+  a. Open your command/terminal
+  b. Type: pip install matplotlib
+  c. For more information, follow this link: http://matplotlib.org/users/installing.html
+7. nltk: Follow these steps:
+  a. Open your command/terminal
+  b. Type: sudo pip install -U nltk
+  c. For more information, follow this link: http://www.nltk.org/install.html
