@@ -91,11 +91,13 @@ class SVM_SVC():
         X_train, X_test, y_train, y_test = train_test_split(training_data, data_y, test_size=0.2, random_state=0)
         tuned_parameters = {'C':[1,10,50,100],
                             'kernel':['rbf','linear','poly'],
-                            'degree':[2,3,4]}
+                            'degree':[2,3,4],
+                            'gamma':[10**-3,10**-2,10**-1,1,10**1,10**2]}
 #        tuned_parameters = {'n_estimators':[10,20],
 #                            'criterion':['gini', 'entropy'],
 #                            'max_depth':[5,10]}
-        clf = GridSearchCV(svm.SVC(), tuned_parameters, cv=5)
+#        clf = GridSearchCV(svm.SVC(), tuned_parameters, cv=5)
+        clf = GridSearchCV(svm.SVC(), tuned_parameters, cv=3)
         clf.fit(X_train, y_train)
         
         print clf.best_params_
