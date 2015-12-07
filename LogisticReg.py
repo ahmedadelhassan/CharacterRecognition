@@ -39,7 +39,7 @@ class LogisticReg():
         {'penalty': 'l1', 'C': 10}
         0.97
         """
-        self.learning_model = LogisticRegression(multi_class='multinomial', penalty = l1, C= 10)
+        self.learning_model = LogisticRegression(multi_class='multinomial', penalty = "l2", C= 10, solver="lbfgs")
     
     def get_data(self, dataset_path = "./teams_dataset"):
         data_dict = self.reader.read_dataset_images(dataset_path)

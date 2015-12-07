@@ -29,7 +29,6 @@ import NaiveBayes
 import RandomForest
 import svm
 import LogisticReg
-import TestClassifier
 
 def vp_start_gui():
     '''Starting point when module is the main routine.'''
@@ -111,7 +110,6 @@ class New_Toplevel_1:
         self.RandomForests = RandomForest.RandomForests()
         self.SVM = svm.SVM_SVC()
         self.LogisticReg = LogisticReg.LogisticReg()
-        self.TC = TestClassifier.TestClassifier()
 
         self.Clear = Button(self.TNotebook1_predict)
         self.Clear.place(relx=0.44, rely=0.14, height=24, width=78)
@@ -355,14 +353,6 @@ class New_Toplevel_1:
             image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
             self.RandomForests.training(CharRecognitionGUI_support.training_dataset)
             pred = self.RandomForests.predict(image)
-            pred_thumb = self.thumbnails[pred[0]]
-            self._image = PhotoImage(file=pred_thumb)
-            self.Thumbnail.configure(image=self._image)
-        
-        elif self.TCombobox1.get().split(" ")[0] == 'Test':
-            image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
-            self.TC.training(CharRecognitionGUI_support.training_dataset)
-            pred = self.TC.predict(image)
             pred_thumb = self.thumbnails[pred[0]]
             self._image = PhotoImage(file=pred_thumb)
             self.Thumbnail.configure(image=self._image)
