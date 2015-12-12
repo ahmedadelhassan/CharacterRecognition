@@ -40,11 +40,11 @@ class AdaBoost(ml_alg_base):
             
         self.learning_model.fit(training_data, data_set_y)
         
-        pickle.dump( self.learning_model, open( "AdaBoostClassifier.p", "wb" ) )
+        pickle.dump( self.learning_model, open( "./Models/AdaBoostClassifier.p", "wb" ) )
         
     def predict(self, image):
         try:
-            self.learning_model = pickle.load( open( "AdaBoostClassifier.p", "rb" ) )
+            self.learning_model = pickle.load( open( "./Models/AdaBoostClassifier.p", "rb" ) )
         except:
             print "Please train the logistic model first"
             #exit()

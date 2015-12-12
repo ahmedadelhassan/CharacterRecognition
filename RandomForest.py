@@ -53,11 +53,11 @@ class RandomForests(ml_alg_base):
 
         self.learning_model.fit(training_data, data_set_y)
         
-        pickle.dump( self.learning_model, open( "random_forest.p", "wb" ) )
+        pickle.dump( self.learning_model, open( "./Models/random_forest.p", "wb" ) )
         
     def predict(self, image):
         try:
-            self.learning_model = pickle.load( open( "random_forest.p", "rb" ) )
+            self.learning_model = pickle.load( open( "./Models/random_forest.p", "rb" ) )
         except:
             print "Please train the random_forest model first"
             # exit()

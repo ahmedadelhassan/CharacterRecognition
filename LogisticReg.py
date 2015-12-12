@@ -62,11 +62,11 @@ class LogisticReg(ml_alg_base):
             
         self.learning_model.fit(training_data, data_set_y)
         
-        pickle.dump( self.learning_model, open( "logistic_model.p", "wb" ) )
+        pickle.dump( self.learning_model, open( "./Models/logistic_model.p", "wb" ) )
         
     def predict(self, image):
         try:
-            self.learning_model = pickle.load( open( "logistic_model.p", "rb" ) )
+            self.learning_model = pickle.load( open( "./Models/logistic_model.p", "rb" ) )
         except:
             print "Please train the logistic model first"
             #exit()
