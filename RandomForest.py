@@ -52,7 +52,14 @@ class RandomForests(ml_alg_base):
 
         self.learning_model.fit(training_data, data_set_y)
         
+        joblib.dump(self.learning_model, 'random_forest.pkl') 
+        
     def predict(self, image):
+        try:
+            self.learning_model = joblib.load('random_forest.pkl')
+        except:
+            print "Please train the random_forest model first"
+            exit()
         fourier_desc = self.get_fourier_desc(image)
         test_data = np.reshape(fourier_desc, (1,-1))[0]
         predictions = self.learning_model.predict(test_data)
