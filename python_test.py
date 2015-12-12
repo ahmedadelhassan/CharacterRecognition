@@ -14,7 +14,6 @@ from tkFileDialog import *
 import PIL
 import cv2
 import skimage
-import seqlearn
 import sklearn
 import nltk
 import pyxdameraulevenshtein
