@@ -12,6 +12,7 @@ from sklearn.grid_search import GridSearchCV
 from sklearn.metrics import classification_report
 import random
 from ml_base_class import ml_alg_base
+from sklearn.externals import joblib
 
 class SVM_SVC(ml_alg_base):
     def __init__(self, num_fourier_des = 10):

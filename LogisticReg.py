@@ -10,8 +10,9 @@ from sklearn import cross_validation
 from sklearn.linear_model import LogisticRegression
 from sklearn.grid_search import GridSearchCV
 import random
-
 from ml_base_class import ml_alg_base
+from sklearn.externals import joblib
+
 class LogisticReg(ml_alg_base):
     def __init__(self, num_fourier_des = 10):
         ml_alg_base.__init__(self)

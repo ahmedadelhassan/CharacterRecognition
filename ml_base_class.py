@@ -16,7 +16,6 @@ from sklearn import cross_validation
 from sklearn.metrics import classification_report
 from copy import deepcopy
 import random
-from sklearn.externals import joblib
 class ml_alg_base():
     def __init__(self):
         self.reader = DatasetReader()
@@ -48,7 +47,7 @@ class ml_alg_base():
     def TestScore(self, data_x, data_y, estimator):
         pass
     
-    def first_exp(self, data_x, data_y, estimator, num_iter=10):
+    def first_exp(self, data_x, data_y, estimator, num_iter=10, algorithm_name=""):
         local_data_x = deepcopy(data_x)
         local_data_y = deepcopy(data_y)
         
