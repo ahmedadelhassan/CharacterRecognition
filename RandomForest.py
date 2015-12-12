@@ -11,10 +11,11 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.grid_search import GridSearchCV
 from sklearn.metrics import classification_report
 import random
+from ml_base_class import ml_alg_base
 
-class RandomForests():
+class RandomForests(ml_alg_base):
     def __init__(self, num_fourier_des = 10):
-        self.reader = DatasetReader()
+        ml_alg_base.__init__(self)
         self.num_fourier_des = num_fourier_des
         """        
         The following classifier configurations has been selected by the grid search
@@ -30,7 +31,7 @@ class RandomForests():
         {'n_estimators': 100, 'criterion': 'gini', 'max_depth': 10}
         0.945
         """
-        self.random_forest = RandomForestClassifier(max_depth=10, n_estimators=100, criterion='gini')
+        self.learning_model = RandomForestClassifier(max_depth=10, n_estimators=100, criterion='gini')
     
     def get_data(self, dataset_path = "./teams_dataset"):
         data_dict = self.reader.read_dataset_images(dataset_path)
@@ -39,22 +40,22 @@ class RandomForests():
         data_set_y = map(int,data_set_y) #convert the string label into a number - may create a problem later!!
         data_set_x, data_set_y = self.shuffle_data(data_set_x, data_set_y)
         
-        return data_set_x, data_set_y
-    
-    def training(self, dataset_path = "./teams_dataset"):
-        data_set_x, data_set_y = self.get_data(dataset_path)
-        
         training_data = []
         for image_array in data_set_x:
             fourier_desc = self.get_fourier_desc(image_array)
-            training_data.append(np.reshape(fourier_desc, (1,-1))[0])
-            
-        self.random_forest.fit(training_data, data_set_y)
+            training_data.append(np.reshape(fourier_desc, (1,-1))[0])        
+        
+        return training_data, data_set_y
+    
+    def training(self, dataset_path = "./teams_dataset"):
+        training_data, data_set_y = self.get_data(dataset_path)
+
+        self.learning_model.fit(training_data, data_set_y)
         
     def predict(self, image):
         fourier_desc = self.get_fourier_desc(image)
         test_data = np.reshape(fourier_desc, (1,-1))[0]
-        predictions = self.random_forest.predict(test_data)
+        predictions = self.learning_model.predict(test_data)
         return map(str, predictions) # I return str, since I am not sure ADEL is working with integers
         
     def shuffle_data(self, data_x, data_y):
@@ -94,3 +95,6 @@ class RandomForests():
 #classifier = RandomForests()
 #for i in range(5): # I want to make sure that the estimated parameters are stable!
 #    classifier.grid_search()
+#classifier = RandomForests()
+#data_x, data_y = classifier.get_data()
+#classifier.first_exp(data_x, data_y, classifier.learning_model, num_iter=50) #change 10 later to 50
