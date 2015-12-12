@@ -149,7 +149,12 @@ class FreemanEncoder(object):
 # from FreemanEncoder import FreemanEncoder
 # dsr = DatasetReader()
 # fenc = FreemanEncoder()
-# dataset = dsr.read_img_bw('I:\\eclipse_workspace\\CharacterRecognition\\observation\\0\\0_1.png')
-# codes = fenc.encode_freeman(dataset)
-# print codes
-# print fenc.gen_bagofwords_dict(codes)
+# dataset = dsr.read_dataset_images('I:\\eclipse_workspace\\CharacterRecognition\\teams_dataset')
+# codes = fenc.encode_freeman_dataset(dataset)
+# # print codes
+# # print fenc.gen_bagofwords_dict(codes)
+# labeled_array,_,_=dsr.gen_labelled_arrays(codes)
+# labeled_array = list(map(str, labeled_array))
+# with open('teams_codes.txt', 'w') as fn:
+#     for i in labeled_array:
+#         fn.writelines(i+'\n')

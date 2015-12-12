@@ -10,6 +10,7 @@ from DatasetReader import DatasetReader
 from FreemanEncoder import FreemanEncoder
 from sklearn import cross_validation
 from nltk import HiddenMarkovModelTrainer
+import pickle
 
 class HMM(object):
     '''
@@ -22,8 +23,8 @@ class HMM(object):
         '''
         self.dsr = DatasetReader()
         self.fenc = FreemanEncoder()
-        self.nltkhmm = HiddenMarkovModelTrainer()
-        self.model = ''
+        self.learning_model = HiddenMarkovModelTrainer()
+        self.model = None
         
     def generate_labelled_sequences(self, freeman_codes_dict):
         labeled_sequences = []
@@ -44,26 +45,52 @@ class HMM(object):
         return labeled_symbols, labeled_sequences, codes, labels
             
         
-    def hmm_train(self, dataset_path):
+    def training(self, dataset_path, cv=1, n_iter=1):
         dataset = self.dsr.read_dataset_images(dataset_path)
         freeman_codes_dict = self.fenc.encode_freeman_dataset(dataset)
          
         labeled_symbols, labeled_sequence, codes, labels = self.generate_labelled_sequences(freeman_codes_dict)
         
-        self.model = self.nltkhmm.train(labeled_symbols)
+        self.model = self.learning_model.train(labeled_symbols)
         
-        training_score = self.model.evaluate(labeled_symbols)
-        
-        return training_score
+        if cv > 1:
+            cv_scores = []
+            for i in range(n_iter):
+                skf = cross_validation.KFold(len(labels), n_folds=10, shuffle=True)
+                
+                iter_score = []
+                for train_index, test_index in skf:
+                    train_data = list(numpy.array(labeled_symbols)[train_index])
+                    test_data = list(numpy.array(labeled_symbols)[test_index])
+                    self.model = self.learning_model.train(train_data)
+                    fold_score = self.model.evaluate(test_data)
+                    iter_score.append(fold_score)
+                
+                cv_scores.append(numpy.mean(iter_score))
+                
+            return cv_scores
+        else:
+            skf = cross_validation.ShuffleSplit(len(labels), n_iter=n_iter, test_size=0.2, random_state=0)
+            training_score = []
+            test_score = []
+            for train_index, test_index in skf:
+                train_data = list(numpy.array(labeled_symbols)[train_index])
+                test_data = list(numpy.array(labeled_symbols)[test_index])
+                self.model = self.learning_model.train(train_data)
+                training_score.append(self.model.evaluate(train_data))
+                test_score.append(self.model.evaluate(test_data))
+                
+                
+            return training_score, test_score
     
-    def hmm_predict_one(self, image_path):
+    def predict(self, image_path):
+        
         if os.path.isfile(image_path):
             image_array = self.dsr.read_img_bw(image_path)
             freeman_code = self.fenc.encode_freeman(image_array)
         else:
             freeman_code = image_path
         
-#         code_histogram = self.fenc.count_bagofwords(freeman_code)
         
         predicted_states = self.model.tag(freeman_code)
         predicted_states = [x[1] for x in predicted_states]
@@ -76,5 +103,12 @@ class HMM(object):
 ## TESTING CODE (WILL BE REMOVED) ##
 # from HMM import HMM
 # hmm = HMM()
-# print hmm.hmm_train('I:\\eclipse_workspace\\CharacterRecognition\\digits_dataset_clean')
-# print hmm.hmm_predict_one('I:\\eclipse_workspace\\CharacterRecognition\\observation\\0\\0_9.png')
+# cv_scores = hmm.training('I:\\eclipse_workspace\\CharacterRecognition\\teams_dataset', cv=10, n_iter=50)
+# train_score, test_score = hmm.training('I:\\eclipse_workspace\\CharacterRecognition\\teams_dataset', n_iter=50)
+#  
+# with open("./Results/hmm.txt", 'w') as fp:
+#     for i in range(len(cv_scores)):
+#         text = str(cv_scores[i]) + ',' + str(train_score[i]) + ',' + str(test_score[i]) + '\n'
+#         print text
+#         print '--------------------------------'
+#         fp.write(text)

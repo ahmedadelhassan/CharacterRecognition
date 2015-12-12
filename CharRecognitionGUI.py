@@ -6,7 +6,9 @@
 import sys
 import os
 import numpy
+from tkFileDialog import askopenfilename
 import matplotlib.pyplot as plt
+import pickle
 
 try:
     from Tkinter import *
@@ -22,13 +24,15 @@ except ImportError:
 
 import CharRecognitionGUI_support
 from FreemanEncoder import FreemanEncoder
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageWin, ImageTk
 import KNN
 import HMM
 import NaiveBayes
 import RandomForest
 import svm
 import LogisticReg
+import adaboost
+import gbrt
 
 def vp_start_gui():
     '''Starting point when module is the main routine.'''
@@ -103,24 +107,11 @@ class New_Toplevel_1:
         self.x = None
         self.y = None
         
-        self.fenc = FreemanEncoder()
-        self.knn = KNN.KNN()
-        self.HMM = HMM.HMM()
-        self.NaiveBayes = NaiveBayes.NaiveBayes()
-        self.RandomForests = RandomForest.RandomForests()
-        self.SVM = svm.SVM_SVC()
-        self.LogisticReg = LogisticReg.LogisticReg()
+        # Initialize and train all classifiers
+        self._init_classifiers()
 
-        self.Clear = Button(self.TNotebook1_predict)
+        self.Clear = ttk.Button(self.TNotebook1_predict)
         self.Clear.place(relx=0.44, rely=0.14, height=24, width=78)
-        self.Clear.configure(activebackground="#d9d9d9")
-        self.Clear.configure(activeforeground="#000000")
-        self.Clear.configure(background=_bgcolor)
-        self.Clear.configure(disabledforeground="#a3a3a3")
-        self.Clear.configure(foreground="#000000")
-        self.Clear.configure(highlightbackground="#d9d9d9")
-        self.Clear.configure(highlightcolor="black")
-        self.Clear.configure(pady="0")
         self.Clear.configure(text='''Clear Canvas''')
         self.Clear.bind("<Button-1>",self.clear)
 
@@ -138,31 +129,15 @@ class New_Toplevel_1:
         self.Canvas1.bind("<B1-Motion>",self.drag)
         self.Canvas1.bind("<ButtonRelease-1>",self.drag_end)
 
-        self.Save = Button(self.TNotebook1_predict)
+        self.Save = ttk.Button(self.TNotebook1_predict)
         self.Save.place(relx=0.5, rely=0.04, height=24, width=77)
-        self.Save.configure(activebackground="#d9d9d9")
-        self.Save.configure(activeforeground="#000000")
-        self.Save.configure(background=_bgcolor)
-        self.Save.configure(disabledforeground="#a3a3a3")
-        self.Save.configure(foreground="#000000")
-        self.Save.configure(highlightbackground="#d9d9d9")
-        self.Save.configure(highlightcolor="black")
-        self.Save.configure(pady="0")
         self.Save.configure(text='''Save''')
         self.Save.bind("<Button-1>",self.save)
 
-        self.Quit = Button(self.TNotebook1_predict)
-        self.Quit.place(relx=0.44, rely=0.24, height=24, width=77)
-        self.Quit.configure(activebackground="#d9d9d9")
-        self.Quit.configure(activeforeground="#000000")
-        self.Quit.configure(background=_bgcolor)
-        self.Quit.configure(disabledforeground="#a3a3a3")
-        self.Quit.configure(foreground="#000000")
-        self.Quit.configure(highlightbackground="#d9d9d9")
-        self.Quit.configure(highlightcolor="black")
-        self.Quit.configure(pady="0")
-        self.Quit.configure(text='''Quit''')
-        self.Quit.bind("<Button-1>",self.quit)
+        self.Select = ttk.Button(self.TNotebook1_predict)
+        self.Select.place(relx=0.44, rely=0.24, height=24, width=77)
+        self.Select.configure(text='''Select Image''')
+        self.Select.bind("<Button-1>",self.select)
 
         self.Frame1 = Frame(self.TNotebook1_predict)
         self.Frame1.place(relx=0.61, rely=0.02, relheight=0.6, relwidth=0.36)
@@ -189,7 +164,9 @@ class New_Toplevel_1:
         self.TCombobox1 = ttk.Combobox(self.TNotebook1_predict)
         self.TCombobox1.place(relx=0.41, rely=0.35, relheight=0.06
                 , relwidth=0.16)
-        self.value_list = ['kNN (Freeman Code)','HMM (Freeman Code)','RandomForests (EFD)','NaiveBayes (RAW)', 'SVM (EFD)', 'LogisticReg (EFD)']
+        self.value_list = ['kNN (Freeman Code)','HMM (Freeman Code)','RandomForest (EFD)',
+                           'NaiveBayes (RAW)', 'SVM (EFD)', 'LogisticReg (EFD)',
+                           'AdaBoost (EFD)', 'GradientBoosting (EFD)']
         self.TCombobox1.configure(values=self.value_list)
         self.TCombobox1.configure(textvariable=CharRecognitionGUI_support.combobox)
         self.TCombobox1.configure(takefocus="")
@@ -222,32 +199,73 @@ class New_Toplevel_1:
         self.Thumbnail.configure(text='''Label''')
         self.Thumbnail.configure(width=94)
 
-        self.Recognize = Button(self.TNotebook1_predict)
+        self.Recognize = ttk.Button(self.TNotebook1_predict)
         self.Recognize.place(relx=0.44, rely=0.45, height=24, width=87)
-        self.Recognize.configure(activebackground="#d9d9d9")
-        self.Recognize.configure(activeforeground="#000000")
-        self.Recognize.configure(background=_bgcolor)
-        self.Recognize.configure(disabledforeground="#a3a3a3")
-        self.Recognize.configure(foreground="#000000")
-        self.Recognize.configure(highlightbackground="#d9d9d9")
-        self.Recognize.configure(highlightcolor="black")
-        self.Recognize.configure(pady="0")
         self.Recognize.configure(text='''Recognize''')
         self.Recognize.bind("<Button-1>",self.recognize)
         
-        self.Clear_Results = Button(self.TNotebook1_predict)
+        self.Clear_Results = ttk.Button(self.TNotebook1_predict)
         self.Clear_Results.place(relx=0.44, rely=0.55, height=24, width=87)
-        self.Clear_Results.configure(activebackground="#d9d9d9")
-        self.Clear_Results.configure(activeforeground="#000000")
-        self.Clear_Results.configure(background=_bgcolor)
-        self.Clear_Results.configure(disabledforeground="#a3a3a3")
-        self.Clear_Results.configure(foreground="#000000")
-        self.Clear_Results.configure(highlightbackground="#d9d9d9")
-        self.Clear_Results.configure(highlightcolor="black")
-        self.Clear_Results.configure(pady="0")
         self.Clear_Results.configure(text='''Clear Results''')
         self.Clear_Results.bind("<Button-1>",self.clear_results)
 
+    def _init_classifiers(self):
+        # Initialize classifier objects
+        self.fenc = FreemanEncoder()
+        self.knn = KNN.KNN()
+        self.HMM = HMM.HMM()
+        self.NaiveBayes = NaiveBayes.NaiveBayes()
+        self.RandomForest = RandomForest.RandomForests()
+        self.SVM = svm.SVM_SVC()
+        self.LogisticReg = LogisticReg.LogisticReg()
+        self.AdaBoost = adaboost.AdaBoost()
+        self.GBRT = gbrt.GBRT()
+        
+        #Train initially on the default data set, if no model saved already
+        
+        # Initialize KNN, no saved model for KNN
+        self.knn.knn_train(CharRecognitionGUI_support.training_dataset, 1.0)
+        
+        # Initialize HMM
+        self.HMM.training(CharRecognitionGUI_support.training_dataset)
+        
+        # Initialize Naive Bayes
+        try:
+            pickle.load( open( "./Models/naivebayes_model.p", "rb" ) )
+        except IOError:
+            self.NaiveBayes.training(CharRecognitionGUI_support.training_dataset)
+        
+        # Initialize Random Forest
+        try:
+            pickle.load( open( "./Models/logistic_model.p", "rb" ) )
+        except IOError:
+            self.RandomForest.training(CharRecognitionGUI_support.training_dataset)
+        
+        # Initialize SVM
+        try:
+            pickle.load( open( "./Models/logistic_model.p", "rb" ) )
+        except IOError:
+            self.SVM.training(CharRecognitionGUI_support.training_dataset)
+        
+        # Initialize Logistic Regression
+        try:
+            pickle.load( open( "./Models/logistic_model.p", "rb" ) )
+        except IOError:
+            self.LogisticReg.training(CharRecognitionGUI_support.training_dataset)
+            
+        # Initialize AdaBoost
+        try:
+            pickle.load( open( "./Models/AdaBoostClassifier.p", "rb" ) )
+        except IOError:
+            self.AdaBoost.training(CharRecognitionGUI_support.training_dataset)
+            
+        # Initialize GBRT
+        try:
+            pickle.load( open( "./Models/GradientBoostingClassifier.p", "rb" ) )
+        except IOError:
+            self.GBRT.training(CharRecognitionGUI_support.training_dataset)
+        
+    
     def load_thumbnails(self, thumbnails_path):
         images = {}
         for thumb in os.listdir(thumbnails_path):
@@ -261,6 +279,14 @@ class New_Toplevel_1:
         Event function to quit the drawer window
         '''
         sys.exit()
+        
+    def select(self, event):
+        Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+        self.clear("<Button-1>")
+        image_path = askopenfilename()
+        self.PIL_image = Image.open(image_path)
+        self.selected_image = ImageTk.PhotoImage(self.PIL_image)
+        self.Canvas1.create_image(150, 150, image=self.selected_image)
        
     def clear(self, event):
         '''
@@ -310,7 +336,7 @@ class New_Toplevel_1:
         self.freeman_textbox.delete("1.0", END)
         self._img1 = PhotoImage(file='./thumbnails/blank.gif')
         self.Thumbnail.configure(image=self._img1)
-
+    
     def recognize(self, event):
         image = ~numpy.array(self.PIL_image.convert('L'))
         try:
@@ -328,38 +354,38 @@ class New_Toplevel_1:
             pass
         
         elif self.TCombobox1.get().split(" ")[0] == 'kNN':
-            self.knn.knn_train(CharRecognitionGUI_support.training_dataset, 1.0)
+            
             pred = self.knn.knn_predict_one(code, 1)
             pred_thumb = self.thumbnails[pred[0]]
             self._image = PhotoImage(file=pred_thumb)
             self.Thumbnail.configure(image=self._image)
             
         elif self.TCombobox1.get().split(" ")[0] == 'HMM':
-            self.HMM.hmm_train(CharRecognitionGUI_support.training_dataset)
-            pred = self.HMM.hmm_predict_one(code)
+            
+            pred = self.HMM.predict(code)
             pred_thumb = self.thumbnails[pred[0]]
             self._image = PhotoImage(file=pred_thumb)
             self.Thumbnail.configure(image=self._image)
                     
         elif self.TCombobox1.get().split(" ")[0] == 'NaiveBayes':
             image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
-            self.NaiveBayes.GaussianNB_train(CharRecognitionGUI_support.training_dataset)
-            pred = self.NaiveBayes.GaussianNB_predict_one(image)
+            
+            pred = self.NaiveBayes.predict(image)
             pred_thumb = self.thumbnails[pred[0]]
             self._image = PhotoImage(file=pred_thumb)
             self.Thumbnail.configure(image=self._image)
         
-        elif self.TCombobox1.get().split(" ")[0] == 'RandomForests':
+        elif self.TCombobox1.get().split(" ")[0] == 'RandomForest':
             image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
-            self.RandomForests.training(CharRecognitionGUI_support.training_dataset)
-            pred = self.RandomForests.predict(image)
+            
+            pred = self.RandomForest.predict(image)
             pred_thumb = self.thumbnails[pred[0]]
             self._image = PhotoImage(file=pred_thumb)
             self.Thumbnail.configure(image=self._image)
         
         elif self.TCombobox1.get().split(" ")[0] == 'SVM':
             image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
-            self.SVM.training(CharRecognitionGUI_support.training_dataset)
+            
             pred = self.SVM.predict(image)
             pred_thumb = self.thumbnails[pred[0]]
             self._image = PhotoImage(file=pred_thumb)
@@ -367,8 +393,24 @@ class New_Toplevel_1:
         
         elif self.TCombobox1.get().split(" ")[0] == 'LogisticReg':
             image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
-            self.LogisticReg.training(CharRecognitionGUI_support.training_dataset)
+            
             pred = self.LogisticReg.predict(image)
+            pred_thumb = self.thumbnails[pred[0]]
+            self._image = PhotoImage(file=pred_thumb)
+            self.Thumbnail.configure(image=self._image)
+            
+        elif self.TCombobox1.get().split(" ")[0] == 'AdaBoost':
+            image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            
+            pred = self.AdaBoost.predict(image)
+            pred_thumb = self.thumbnails[pred[0]]
+            self._image = PhotoImage(file=pred_thumb)
+            self.Thumbnail.configure(image=self._image)
+            
+        elif self.TCombobox1.get().split(" ")[0] == 'GradientBoosting':
+            image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            
+            pred = self.GBRT.predict(image)
             pred_thumb = self.thumbnails[pred[0]]
             self._image = PhotoImage(file=pred_thumb)
             self.Thumbnail.configure(image=self._image)
