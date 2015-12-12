@@ -66,11 +66,11 @@ class SVM_SVC(ml_alg_base):
         self.learning_model.fit(training_data, data_set_y)
         
         # dump the saved model in pickle file
-        joblib.dump(self.learning_model, 'svm.pkl') 
+        pickle.dump( self.learning_model, open( "svm.p", "wb" ) )
         
     def predict(self, image):
         try:
-            self.learning_model = joblib.load('svm.pkl')
+            self.learning_model = pickle.load( open( "svm.p", "rb" ) )
         except:
             print "Please train the svm model first"
             #exit()

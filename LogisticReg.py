@@ -62,11 +62,11 @@ class LogisticReg(ml_alg_base):
             
         self.learning_model.fit(training_data, data_set_y)
         
-        joblib.dump(self.learning_model, 'logistic_model.pkl') 
+        pickle.dump( self.learning_model, open( "logistic_model.p", "wb" ) )
         
     def predict(self, image):
         try:
-            self.learning_model = joblib.load('logistic_model.pkl')
+            self.learning_model = pickle.load( open( "logistic_model.p", "rb" ) )
         except:
             print "Please train the logistic model first"
             #exit()
@@ -74,16 +74,6 @@ class LogisticReg(ml_alg_base):
         test_data = np.reshape(fourier_desc, (1,-1))[0]
         predictions = self.learning_model.predict(test_data)
         return map(str, predictions) # I return str, since I am not sure ADEL is working with integers
-        
-    def shuffle_data(self, data_x, data_y):
-        """
-        The code for this part is taken from
-        http://stackoverflow.com/questions/23289547/shuffle-two-list-at-once-with-same-order
-        """
-        c = list(zip(data_x, data_y))
-        random.shuffle(c)
-        data_x, data_y = zip(*c)
-        return list(data_x), list(data_y)
     
     def get_fourier_desc(self, image_array):
         efds1, K1, T1 = elliptic_fourier_descriptors(image_array,self.num_fourier_des)

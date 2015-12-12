@@ -12,7 +12,7 @@ from sklearn.grid_search import GridSearchCV
 from sklearn.metrics import classification_report
 import random
 from ml_base_class import ml_alg_base
-from sklearn.externals import joblib
+import pickle
 
 class RandomForests(ml_alg_base):
     def __init__(self, num_fourier_des = 10):
@@ -53,11 +53,11 @@ class RandomForests(ml_alg_base):
 
         self.learning_model.fit(training_data, data_set_y)
         
-        joblib.dump(self.learning_model, 'random_forest.pkl') 
+        pickle.dump( self.learning_model, open( "random_forest.p", "wb" ) )
         
     def predict(self, image):
         try:
-            self.learning_model = joblib.load('random_forest.pkl')
+            self.learning_model = pickle.load( open( "random_forest.p", "rb" ) )
         except:
             print "Please train the random_forest model first"
             # exit()
@@ -65,16 +65,6 @@ class RandomForests(ml_alg_base):
         test_data = np.reshape(fourier_desc, (1,-1))[0]
         predictions = self.learning_model.predict(test_data)
         return map(str, predictions) # I return str, since I am not sure ADEL is working with integers
-        
-    def shuffle_data(self, data_x, data_y):
-        """
-        The code for this part is taken from
-        http://stackoverflow.com/questions/23289547/shuffle-two-list-at-once-with-same-order
-        """
-        c = list(zip(data_x, data_y))
-        random.shuffle(c)
-        data_x, data_y = zip(*c)
-        return list(data_x), list(data_y)
     
     def get_fourier_desc(self, image_array):
         efds1, K1, T1 = elliptic_fourier_descriptors(image_array,self.num_fourier_des)
@@ -100,8 +90,7 @@ class RandomForests(ml_alg_base):
         print clf.best_score_
         
 # The grid search code - to find the best parameters
-classifier = RandomForests()
-classifier.training()
+#print classifier.predict(data_x[0])
 #for i in range(5): # I want to make sure that the estimated parameters are stable!
 #    classifier.grid_search()
 #classifier = RandomForests()
