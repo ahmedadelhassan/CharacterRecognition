@@ -20,7 +20,7 @@ class ml_alg_base():
     def __init__(self):
         self.reader = DatasetReader()
     
-    def training():
+    def training(self):
         print "Training method is not implemented"
         raise NotImplementedError
         
@@ -50,27 +50,32 @@ class ml_alg_base():
     def first_exp(self, data_x, data_y, estimator, num_iter=10, algorithm_name=""):
         local_data_x = deepcopy(data_x)
         local_data_y = deepcopy(data_y)
+            
+        assert algorithm_name != "", "Please enter a name for the experiment in the first experiment"
         
-        for i in range(num_iter):
-            local_data_x, local_data_y = self.shuffle_data(local_data_x, local_data_y)
-            X_train, X_test, y_train, y_test = cross_validation.train_test_split(local_data_x, local_data_y, test_size=0.2)
-            
-            estimator.fit(X_train, y_train)            
-            
-            #I will change this to leave one out cross validation
-            cv_scores = cross_validation.cross_val_score(estimator, X_train, y_train, cv=10).mean()
-            
-            #Train score
-            train_score = estimator.score(X_train, y_train)
-            
-            #Test score
-            test_score = estimator.score(X_test, y_test)
-            test_predict = estimator.predict(X_test)
-            
-            print("CV_Accuracy: %0.2f" % (cv_scores))
-            print("train_Accuracy: %0.2f" % (train_score))
-            print("test_Accuracy: %0.2f" % (test_score))
-            
-            print [i for i, j in zip(list(test_predict), y_test) if i != j]
-            
-            print "----------------------------"
+        with open("./Results/"+algorithm_name+".txt", "w") as file:
+            for i in range(num_iter):
+                local_data_x, local_data_y = self.shuffle_data(local_data_x, local_data_y)
+                X_train, X_test, y_train, y_test = cross_validation.train_test_split(local_data_x, local_data_y, test_size=0.2)
+                
+                estimator.fit(X_train, y_train)            
+                
+                #I will change this to leave one out cross validation
+                cv_scores = cross_validation.cross_val_score(estimator, X_train, y_train, cv=10).mean()
+                
+                #Train score
+                train_score = estimator.score(X_train, y_train)
+                
+                #Test score
+                test_score = estimator.score(X_test, y_test)
+                test_predict = estimator.predict(X_test)
+                
+                print("CV_Accuracy: %0.2f" % (cv_scores))
+                print("train_Accuracy: %0.2f" % (train_score))
+                print("test_Accuracy: %0.2f" % (test_score))
+                
+                print [i for i, j in zip(list(test_predict), y_test) if i != j]
+                
+                print >> file, cv_scores, ",", train_score, ",", test_score
+                
+                print "----------------------------"

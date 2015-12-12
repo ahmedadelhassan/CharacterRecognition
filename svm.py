@@ -111,4 +111,4 @@ class SVM_SVC(ml_alg_base):
 #    classifier.grid_search()
 #classifier = SVM_SVC()
 #data_x, data_y = classifier.get_data()
-#classifier.first_exp(data_x, data_y, classifier.learning_model, num_iter=50) #change 10 later to 50
+#classifier.first_exp(data_x, data_y, classifier.learning_model, num_iter=50, algorithm_name="svm") #change 10 later to 50

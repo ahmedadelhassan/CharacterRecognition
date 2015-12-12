@@ -19,8 +19,7 @@ class AdaBoost(ml_alg_base):
         ml_alg_base.__init__(self)
         self.num_fourier_des = num_fourier_des
 
-        self.learning_model = AdaBoostClassifier(base_estimator=RandomForestClassifier(max_depth=5, n_estimators=10, criterion='gini')
-        ,n_estimators=20)
+        self.learning_model = AdaBoostClassifier(n_estimators=100)
     
     def get_data(self, dataset_path = "./teams_dataset"):
         data_dict = self.reader.read_dataset_images(dataset_path)
@@ -61,4 +60,4 @@ class AdaBoost(ml_alg_base):
 # The grid search code - to find the best parameters
 #classifier = AdaBoost()
 #data_x, data_y = classifier.get_data()
-#classifier.first_exp(data_x, data_y, classifier.learning_model, num_iter=50) #change 10 later to 50
+#classifier.first_exp(data_x, data_y, classifier.learning_model, num_iter=50, algorithm_name="adaboost") #change 10 later to 50
