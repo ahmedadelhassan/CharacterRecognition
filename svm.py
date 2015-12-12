@@ -64,7 +64,15 @@ class SVM_SVC(ml_alg_base):
             
         self.learning_model.fit(training_data, data_set_y)
         
+        # dump the saved model in pickle file
+        joblib.dump(self.learning_model, 'svm.pkl') 
+        
     def predict(self, image):
+        try:
+            self.learning_model = joblib.load('svm.pkl')
+        except:
+            print "Please train the svm model first"
+            exit()
         fourier_desc = self.get_fourier_desc(image)
         test_data = np.reshape(fourier_desc, (1,-1))[0]
         predictions = self.learning_model.predict(test_data)
