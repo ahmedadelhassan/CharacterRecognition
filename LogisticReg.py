@@ -69,7 +69,7 @@ class LogisticReg(ml_alg_base):
             self.learning_model = joblib.load('logistic_model.pkl')
         except:
             print "Please train the logistic model first"
-            exit()
+            #exit()
         fourier_desc = self.get_fourier_desc(image)
         test_data = np.reshape(fourier_desc, (1,-1))[0]
         predictions = self.learning_model.predict(test_data)

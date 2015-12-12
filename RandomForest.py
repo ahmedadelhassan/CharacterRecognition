@@ -60,7 +60,7 @@ class RandomForests(ml_alg_base):
             self.learning_model = joblib.load('random_forest.pkl')
         except:
             print "Please train the random_forest model first"
-            exit()
+            # exit()
         fourier_desc = self.get_fourier_desc(image)
         test_data = np.reshape(fourier_desc, (1,-1))[0]
         predictions = self.learning_model.predict(test_data)
@@ -100,7 +100,8 @@ class RandomForests(ml_alg_base):
         print clf.best_score_
         
 # The grid search code - to find the best parameters
-#classifier = RandomForests()
+classifier = RandomForests()
+classifier.training()
 #for i in range(5): # I want to make sure that the estimated parameters are stable!
 #    classifier.grid_search()
 #classifier = RandomForests()

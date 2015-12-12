@@ -73,7 +73,7 @@ class SVM_SVC(ml_alg_base):
             self.learning_model = joblib.load('svm.pkl')
         except:
             print "Please train the svm model first"
-            exit()
+            #exit()
         fourier_desc = self.get_fourier_desc(image)
         test_data = np.reshape(fourier_desc, (1,-1))[0]
         predictions = self.learning_model.predict(test_data)
