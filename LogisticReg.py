@@ -12,6 +12,7 @@ from sklearn.grid_search import GridSearchCV
 import random
 from ml_base_class import ml_alg_base
 from sklearn.externals import joblib
+import pickle
 
 class LogisticReg(ml_alg_base):
     def __init__(self, num_fourier_des = 10):
