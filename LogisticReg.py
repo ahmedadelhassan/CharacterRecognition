@@ -11,9 +11,10 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.grid_search import GridSearchCV
 import random
 
-class LogisticReg():
+from ml_base_class import ml_alg_base
+class LogisticReg(ml_alg_base):
     def __init__(self, num_fourier_des = 10):
-        self.reader = DatasetReader()
+        ml_alg_base.__init__(self)
         self.num_fourier_des = num_fourier_des
         """        
         The following classifier configurations has been selected by the grid search
@@ -48,19 +49,26 @@ class LogisticReg():
         data_set_y = map(int,data_set_y) #convert the string label into a number - may create a problem later!!
         data_set_x, data_set_y = self.shuffle_data(data_set_x, data_set_y)
         
-        return data_set_x, data_set_y
-    
-    def training(self, dataset_path = "./teams_dataset"):
-        data_set_x, data_set_y = self.get_data(dataset_path)
-        
         training_data = []
         for image_array in data_set_x:
             fourier_desc = self.get_fourier_desc(image_array)
-            training_data.append(np.reshape(fourier_desc, (1,-1))[0])
+            training_data.append(np.reshape(fourier_desc, (1,-1))[0])        
+        
+        return training_data, data_set_y
+    
+    def training(self, dataset_path = "./teams_dataset"):
+        training_data, data_set_y = self.get_data(dataset_path)
             
         self.learning_model.fit(training_data, data_set_y)
         
+        joblib.dump(self.learning_model, 'logistic_model.pkl') 
+        
     def predict(self, image):
+        try:
+            self.learning_model = joblib.load('logistic_model.pkl')
+        except:
+            print "Please train the logistic model first"
+            exit()
         fourier_desc = self.get_fourier_desc(image)
         test_data = np.reshape(fourier_desc, (1,-1))[0]
         predictions = self.learning_model.predict(test_data)
@@ -100,5 +108,5 @@ class LogisticReg():
         
 # The grid search code - to find the best parameters
 #classifier = LogisticReg()
-#for i in range(10): # I want to make sure that the estimated parameters are stable!
-#    classifier.grid_search()
+#data_x, data_y = classifier.get_data()
+#classifier.first_exp(data_x, data_y, classifier.learning_model, num_iter=50) #change 10 later to 50
