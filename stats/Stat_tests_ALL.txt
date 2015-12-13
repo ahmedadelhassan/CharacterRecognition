@@ -1,4 +1,109 @@
 Comparing CV results
+knn  VS  svm  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+knn  median =  0.71182795699
+svm  median =  0.966798372841
+----------------------------------------------------------
+Comparing Train results
+knn  VS  svm  --> WilcoxonResult(statistic=0.0, pvalue=7.3861048569320701e-10)
+knn  median =  0.888888888889
+svm  median =  0.995
+----------------------------------------------------------
+Comparing Test results
+knn  VS  svm  --> WilcoxonResult(statistic=0.0, pvalue=7.5041245571439658e-10)
+knn  median =  0.730769230769
+svm  median =  0.98
+----------------------------------------------------------
+Comparing CV results
+knn  VS  randomforests  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+knn  median =  0.71182795699
+randomforests  median =  0.945144820219
+----------------------------------------------------------
+Comparing Train results
+knn  VS  randomforests  --> WilcoxonResult(statistic=0.0, pvalue=6.7879872141507655e-10)
+knn  median =  0.888888888889
+randomforests  median =  1.0
+----------------------------------------------------------
+Comparing Test results
+knn  VS  randomforests  --> WilcoxonResult(statistic=0.0, pvalue=7.5041245571439658e-10)
+knn  median =  0.730769230769
+randomforests  median =  0.94
+----------------------------------------------------------
+Comparing CV results
+knn  VS  NaiveBayes  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+knn  median =  0.71182795699
+NaiveBayes  median =  0.25516999165
+----------------------------------------------------------
+Comparing Train results
+knn  VS  NaiveBayes  --> WilcoxonResult(statistic=4.0, pvalue=9.6086120281918218e-10)
+knn  median =  0.888888888889
+NaiveBayes  median =  0.94
+----------------------------------------------------------
+Comparing Test results
+knn  VS  NaiveBayes  --> WilcoxonResult(statistic=0.0, pvalue=7.5262280618946206e-10)
+knn  median =  0.730769230769
+NaiveBayes  median =  0.22
+----------------------------------------------------------
+Comparing CV results
+knn  VS  hmm  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+knn  median =  0.71182795699
+hmm  median =  0.468582065488
+----------------------------------------------------------
+Comparing Train results
+knn  VS  hmm  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+knn  median =  0.888888888889
+hmm  median =  0.507890187807
+----------------------------------------------------------
+Comparing Test results
+knn  VS  hmm  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+knn  median =  0.730769230769
+hmm  median =  0.456295322665
+----------------------------------------------------------
+Comparing CV results
+knn  VS  gbrt  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+knn  median =  0.71182795699
+gbrt  median =  0.811905572756
+----------------------------------------------------------
+Comparing Train results
+knn  VS  gbrt  --> WilcoxonResult(statistic=0.0, pvalue=6.7879872141507655e-10)
+knn  median =  0.888888888889
+gbrt  median =  1.0
+----------------------------------------------------------
+Comparing Test results
+knn  VS  gbrt  --> WilcoxonResult(statistic=112.0, pvalue=3.9133943644868418e-07)
+knn  median =  0.730769230769
+gbrt  median =  0.82
+----------------------------------------------------------
+Comparing CV results
+knn  VS  logistic  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+knn  median =  0.71182795699
+logistic  median =  0.954389885699
+----------------------------------------------------------
+Comparing Train results
+knn  VS  logistic  --> WilcoxonResult(statistic=0.0, pvalue=7.4095745234010244e-10)
+knn  median =  0.888888888889
+logistic  median =  0.985
+----------------------------------------------------------
+Comparing Test results
+knn  VS  logistic  --> WilcoxonResult(statistic=0.0, pvalue=7.4786929795741531e-10)
+knn  median =  0.730769230769
+logistic  median =  0.96
+----------------------------------------------------------
+Comparing CV results
+knn  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+knn  median =  0.71182795699
+adaboost  median =  0.20407303352
+----------------------------------------------------------
+Comparing Train results
+knn  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.5313371678781014e-10)
+knn  median =  0.888888888889
+adaboost  median =  0.22
+----------------------------------------------------------
+Comparing Test results
+knn  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.5415647264407807e-10)
+knn  median =  0.730769230769
+adaboost  median =  0.13
+----------------------------------------------------------
+Comparing CV results
 svm  VS  randomforests  --> WilcoxonResult(statistic=14.0, pvalue=1.7569391573831783e-09)
 svm  median =  0.966798372841
 randomforests  median =  0.945144820219

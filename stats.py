@@ -12,7 +12,7 @@ from scipy import stats
 
 def stats_fn():
     data_frame = {}    
-    algorithms_list = ["gbrt","adaboost", "hmm", "logistic", "NaiveBayes", "randomforests", "svm"]
+    algorithms_list = ["gbrt","adaboost", "hmm", "logistic", "NaiveBayes", "randomforests", "svm","knn"]
     #algorithms_list = ["gbrt","adaboost", "hmm", "logistic", "randomforests", "svm"]
     # Get the stats for each algorthim on its own
     for algo_name in algorithms_list:
