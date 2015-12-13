@@ -1,0 +1,12 @@
+cv VS train --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+cv median =  0.966798372841
+train median =  0.995
+----------------------------------------------------------
+cv VS test --> WilcoxonResult(statistic=586.0, pvalue=0.61908761294355763)
+cv median =  0.966798372841
+test median =  0.98
+----------------------------------------------------------
+test VS train --> WilcoxonResult(statistic=86.5, pvalue=9.0331851314910511e-08)
+test median =  0.98
+train median =  0.995
+----------------------------------------------------------

@@ -1,0 +1,310 @@
+Comparing CV results
+svm  VS  randomforests  --> WilcoxonResult(statistic=14.0, pvalue=1.7569391573831783e-09)
+svm  median =  0.966798372841
+randomforests  median =  0.945144820219
+----------------------------------------------------------
+Comparing Train results
+svm  VS  randomforests  --> WilcoxonResult(statistic=0.0, pvalue=9.0011723444509651e-10)
+svm  median =  0.995
+randomforests  median =  1.0
+----------------------------------------------------------
+Comparing Test results
+svm  VS  randomforests  --> WilcoxonResult(statistic=144.0, pvalue=0.00054226294764674174)
+svm  median =  0.98
+randomforests  median =  0.94
+----------------------------------------------------------
+Comparing CV results
+svm  VS  NaiveBayes  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+svm  median =  0.966798372841
+NaiveBayes  median =  0.25516999165
+----------------------------------------------------------
+Comparing Train results
+svm  VS  NaiveBayes  --> WilcoxonResult(statistic=0.0, pvalue=7.3160959914803643e-10)
+svm  median =  0.995
+NaiveBayes  median =  0.94
+----------------------------------------------------------
+Comparing Test results
+svm  VS  NaiveBayes  --> WilcoxonResult(statistic=0.0, pvalue=7.1177238692585937e-10)
+svm  median =  0.98
+NaiveBayes  median =  0.22
+----------------------------------------------------------
+Comparing CV results
+svm  VS  hmm  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+svm  median =  0.966798372841
+hmm  median =  0.468582065488
+----------------------------------------------------------
+Comparing Train results
+svm  VS  hmm  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+svm  median =  0.995
+hmm  median =  0.507890187807
+----------------------------------------------------------
+Comparing Test results
+svm  VS  hmm  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+svm  median =  0.98
+hmm  median =  0.456295322665
+----------------------------------------------------------
+Comparing CV results
+svm  VS  gbrt  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+svm  median =  0.966798372841
+gbrt  median =  0.811905572756
+----------------------------------------------------------
+Comparing Train results
+svm  VS  gbrt  --> WilcoxonResult(statistic=0.0, pvalue=9.0011723444509651e-10)
+svm  median =  0.995
+gbrt  median =  1.0
+----------------------------------------------------------
+Comparing Test results
+svm  VS  gbrt  --> WilcoxonResult(statistic=0.0, pvalue=7.1339331126943946e-10)
+svm  median =  0.98
+gbrt  median =  0.82
+----------------------------------------------------------
+Comparing CV results
+svm  VS  logistic  --> WilcoxonResult(statistic=78.0, pvalue=6.6266946103600768e-08)
+svm  median =  0.966798372841
+logistic  median =  0.954389885699
+----------------------------------------------------------
+Comparing Train results
+svm  VS  logistic  --> WilcoxonResult(statistic=18.0, pvalue=3.4171083200671256e-08)
+svm  median =  0.995
+logistic  median =  0.985
+----------------------------------------------------------
+Comparing Test results
+svm  VS  logistic  --> WilcoxonResult(statistic=254.0, pvalue=0.02011315732662047)
+svm  median =  0.98
+logistic  median =  0.96
+----------------------------------------------------------
+Comparing CV results
+svm  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+svm  median =  0.966798372841
+adaboost  median =  0.20407303352
+----------------------------------------------------------
+Comparing Train results
+svm  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.3610329094844772e-10)
+svm  median =  0.995
+adaboost  median =  0.22
+----------------------------------------------------------
+Comparing Test results
+svm  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.1843927522842306e-10)
+svm  median =  0.98
+adaboost  median =  0.13
+----------------------------------------------------------
+Comparing CV results
+randomforests  VS  NaiveBayes  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+randomforests  median =  0.945144820219
+NaiveBayes  median =  0.25516999165
+----------------------------------------------------------
+Comparing Train results
+randomforests  VS  NaiveBayes  --> WilcoxonResult(statistic=0.0, pvalue=7.2351728231245897e-10)
+randomforests  median =  1.0
+NaiveBayes  median =  0.94
+----------------------------------------------------------
+Comparing Test results
+randomforests  VS  NaiveBayes  --> WilcoxonResult(statistic=0.0, pvalue=7.15180158027085e-10)
+randomforests  median =  0.94
+NaiveBayes  median =  0.22
+----------------------------------------------------------
+Comparing CV results
+randomforests  VS  hmm  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+randomforests  median =  0.945144820219
+hmm  median =  0.468582065488
+----------------------------------------------------------
+Comparing Train results
+randomforests  VS  hmm  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+randomforests  median =  1.0
+hmm  median =  0.507890187807
+----------------------------------------------------------
+Comparing Test results
+randomforests  VS  hmm  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+randomforests  median =  0.94
+hmm  median =  0.456295322665
+----------------------------------------------------------
+Comparing CV results
+randomforests  VS  gbrt  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+randomforests  median =  0.945144820219
+gbrt  median =  0.811905572756
+----------------------------------------------------------
+Comparing Test results
+randomforests  VS  gbrt  --> WilcoxonResult(statistic=0.0, pvalue=1.0692264358478034e-09)
+randomforests  median =  0.94
+gbrt  median =  0.82
+----------------------------------------------------------
+Comparing CV results
+randomforests  VS  logistic  --> WilcoxonResult(statistic=332.0, pvalue=0.0031872493085119301)
+randomforests  median =  0.945144820219
+logistic  median =  0.954389885699
+----------------------------------------------------------
+Comparing Train results
+randomforests  VS  logistic  --> WilcoxonResult(statistic=0.0, pvalue=3.7283264067121769e-10)
+randomforests  median =  1.0
+logistic  median =  0.985
+----------------------------------------------------------
+Comparing Test results
+randomforests  VS  logistic  --> WilcoxonResult(statistic=274.5, pvalue=0.16094827708643422)
+randomforests  median =  0.94
+logistic  median =  0.96
+----------------------------------------------------------
+Comparing CV results
+randomforests  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+randomforests  median =  0.945144820219
+adaboost  median =  0.20407303352
+----------------------------------------------------------
+Comparing Train results
+randomforests  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.2846216069602605e-10)
+randomforests  median =  1.0
+adaboost  median =  0.22
+----------------------------------------------------------
+Comparing Test results
+randomforests  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.2565634834907584e-10)
+randomforests  median =  0.94
+adaboost  median =  0.13
+----------------------------------------------------------
+Comparing CV results
+NaiveBayes  VS  hmm  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+NaiveBayes  median =  0.25516999165
+hmm  median =  0.468582065488
+----------------------------------------------------------
+Comparing Train results
+NaiveBayes  VS  hmm  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+NaiveBayes  median =  0.94
+hmm  median =  0.507890187807
+----------------------------------------------------------
+Comparing Test results
+NaiveBayes  VS  hmm  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+NaiveBayes  median =  0.22
+hmm  median =  0.456295322665
+----------------------------------------------------------
+Comparing CV results
+NaiveBayes  VS  gbrt  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+NaiveBayes  median =  0.25516999165
+gbrt  median =  0.811905572756
+----------------------------------------------------------
+Comparing Train results
+NaiveBayes  VS  gbrt  --> WilcoxonResult(statistic=0.0, pvalue=7.2351728231245897e-10)
+NaiveBayes  median =  0.94
+gbrt  median =  1.0
+----------------------------------------------------------
+Comparing Test results
+NaiveBayes  VS  gbrt  --> WilcoxonResult(statistic=0.0, pvalue=7.2072859016157296e-10)
+NaiveBayes  median =  0.22
+gbrt  median =  0.82
+----------------------------------------------------------
+Comparing CV results
+NaiveBayes  VS  logistic  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+NaiveBayes  median =  0.25516999165
+logistic  median =  0.954389885699
+----------------------------------------------------------
+Comparing Train results
+NaiveBayes  VS  logistic  --> WilcoxonResult(statistic=0.0, pvalue=7.3460264637993095e-10)
+NaiveBayes  median =  0.94
+logistic  median =  0.985
+----------------------------------------------------------
+Comparing Test results
+NaiveBayes  VS  logistic  --> WilcoxonResult(statistic=0.0, pvalue=7.1860258079624116e-10)
+NaiveBayes  median =  0.22
+logistic  median =  0.96
+----------------------------------------------------------
+Comparing CV results
+NaiveBayes  VS  adaboost  --> WilcoxonResult(statistic=20.0, pvalue=2.5085309417080861e-09)
+NaiveBayes  median =  0.25516999165
+adaboost  median =  0.20407303352
+----------------------------------------------------------
+Comparing Train results
+NaiveBayes  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.5092201842048304e-10)
+NaiveBayes  median =  0.94
+adaboost  median =  0.22
+----------------------------------------------------------
+Comparing Test results
+NaiveBayes  VS  adaboost  --> WilcoxonResult(statistic=37.5, pvalue=1.0490782246821493e-08)
+NaiveBayes  median =  0.22
+adaboost  median =  0.13
+----------------------------------------------------------
+Comparing CV results
+hmm  VS  gbrt  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+hmm  median =  0.468582065488
+gbrt  median =  0.811905572756
+----------------------------------------------------------
+Comparing Train results
+hmm  VS  gbrt  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+hmm  median =  0.507890187807
+gbrt  median =  1.0
+----------------------------------------------------------
+Comparing Test results
+hmm  VS  gbrt  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+hmm  median =  0.456295322665
+gbrt  median =  0.82
+----------------------------------------------------------
+Comparing CV results
+hmm  VS  logistic  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+hmm  median =  0.468582065488
+logistic  median =  0.954389885699
+----------------------------------------------------------
+Comparing Train results
+hmm  VS  logistic  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+hmm  median =  0.507890187807
+logistic  median =  0.985
+----------------------------------------------------------
+Comparing Test results
+hmm  VS  logistic  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+hmm  median =  0.456295322665
+logistic  median =  0.96
+----------------------------------------------------------
+Comparing CV results
+hmm  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+hmm  median =  0.468582065488
+adaboost  median =  0.20407303352
+----------------------------------------------------------
+Comparing Train results
+hmm  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+hmm  median =  0.507890187807
+adaboost  median =  0.22
+----------------------------------------------------------
+Comparing Test results
+hmm  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+hmm  median =  0.456295322665
+adaboost  median =  0.13
+----------------------------------------------------------
+Comparing CV results
+gbrt  VS  logistic  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+gbrt  median =  0.811905572756
+logistic  median =  0.954389885699
+----------------------------------------------------------
+Comparing Train results
+gbrt  VS  logistic  --> WilcoxonResult(statistic=0.0, pvalue=3.7283264067121769e-10)
+gbrt  median =  1.0
+logistic  median =  0.985
+----------------------------------------------------------
+Comparing Test results
+gbrt  VS  logistic  --> WilcoxonResult(statistic=0.0, pvalue=7.2450383863288135e-10)
+gbrt  median =  0.82
+logistic  median =  0.96
+----------------------------------------------------------
+Comparing CV results
+gbrt  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+gbrt  median =  0.811905572756
+adaboost  median =  0.20407303352
+----------------------------------------------------------
+Comparing Train results
+gbrt  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.2846216069602605e-10)
+gbrt  median =  1.0
+adaboost  median =  0.22
+----------------------------------------------------------
+Comparing Test results
+gbrt  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.2763591177255857e-10)
+gbrt  median =  0.82
+adaboost  median =  0.13
+----------------------------------------------------------
+Comparing CV results
+logistic  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.5569294558635658e-10)
+logistic  median =  0.954389885699
+adaboost  median =  0.20407303352
+----------------------------------------------------------
+Comparing Train results
+logistic  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.2664552446107486e-10)
+logistic  median =  0.985
+adaboost  median =  0.22
+----------------------------------------------------------
+Comparing Test results
+logistic  VS  adaboost  --> WilcoxonResult(statistic=0.0, pvalue=7.2565634834907584e-10)
+logistic  median =  0.96
+adaboost  median =  0.13
+----------------------------------------------------------
