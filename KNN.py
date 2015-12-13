@@ -267,16 +267,16 @@ class KNN_statistic(object):
 
 
 # knn = KNN_strings(n_neighbors=1)
-knn = KNN_statistic()
-results = []
-for x in range(50):
-    result_average, result_training, result_test = knn.knn_train("/home/thovo/PycharmProjects/CharacterRecognition/digits_dataset", 0.2)
-    text = result_average.__str__() + " , " + result_training.__str__() + " , " + result_test.__str__() + "\n"
-    results.append(text)
-
-
-f = open("Results/knn.txt", "w")
-for item in results:
-    f.write(item)
-
-f.close()
+# knn = KNN_statistic()
+# results = []
+# for x in range(50):
+#     result_average, result_training, result_test = knn.knn_train("/home/thovo/PycharmProjects/CharacterRecognition/digits_dataset", 0.2)
+#     text = result_average.__str__() + " , " + result_training.__str__() + " , " + result_test.__str__() + "\n"
+#     results.append(text)
+# 
+# 
+# f = open("Results/knn.txt", "w")
+# for item in results:
+#     f.write(item)
+# 
+# f.close()
