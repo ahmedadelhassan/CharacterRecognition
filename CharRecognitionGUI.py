@@ -139,15 +139,27 @@ class New_Toplevel_1:
         self.Select.configure(text='''Select Image''')
         self.Select.bind("<Button-1>",self.select)
 
-        self.Frame1 = Frame(self.TNotebook1_predict)
-        self.Frame1.place(relx=0.61, rely=0.02, relheight=0.6, relwidth=0.36)
-        self.Frame1.configure(relief=GROOVE)
-        self.Frame1.configure(borderwidth="2")
-        self.Frame1.configure(relief=GROOVE)
-        self.Frame1.configure(background=_bgcolor)
-        self.Frame1.configure(highlightbackground="#d9d9d9")
-        self.Frame1.configure(highlightcolor="black")
-        self.Frame1.configure(width=305)
+#         self.Frame1 = Frame(self.TNotebook1_predict)
+#         self.Frame1.place(relx=0.61, rely=0.02, relheight=0.6, relwidth=0.36)
+#         self.Frame1.configure(relief=GROOVE)
+#         self.Frame1.configure(borderwidth="2")
+#         self.Frame1.configure(relief=GROOVE)
+#         self.Frame1.configure(background=_bgcolor)
+#         self.Frame1.configure(highlightbackground="#d9d9d9")
+#         self.Frame1.configure(highlightcolor="black")
+#         self.Frame1.configure(width=305)
+        
+        self.CanvasHist = Canvas(self.TNotebook1_predict)
+        self.CanvasHist.place(relx=0.61, rely=0.02, relheight=0.6, relwidth=0.36)
+        self.CanvasHist.configure(background="white")
+        self.CanvasHist.configure(borderwidth="2")
+        self.CanvasHist.configure(highlightbackground="#d9d9d9")
+        self.CanvasHist.configure(highlightcolor="black")
+        self.CanvasHist.configure(insertbackground="black")
+        self.CanvasHist.configure(relief=RIDGE)
+        self.CanvasHist.configure(selectbackground="#c4c4c4")
+        self.CanvasHist.configure(selectforeground="black")
+        self.CanvasHist.configure(width=378)
         
         self.freeman_textbox = Text(self.TNotebook1_predict)
         self.freeman_textbox.place(relx=0.01, rely=0.69, height=131, width=514)
@@ -190,7 +202,7 @@ class New_Toplevel_1:
         self.Frame2.configure(width=150, height=150)
 
         self.Thumbnail = Label(self.TNotebook1_predict)
-        self.Thumbnail.place(relx=0.75, rely=0.73, height=100, width=100)
+        self.Thumbnail.place(relx=0.75, rely=0.73, relheight=0.225, relwidth=0.125)
         self.Thumbnail.configure(background=_bgcolor)
         self.Thumbnail.configure(disabledforeground="#a3a3a3")
         self.Thumbnail.configure(foreground="#000000")
@@ -336,11 +348,22 @@ class New_Toplevel_1:
         self.freeman_textbox.delete("1.0", END)
         self._img1 = PhotoImage(file='./thumbnails/blank.gif')
         self.Thumbnail.configure(image=self._img1)
+        self.CanvasHist.delete("all")
     
     def recognize(self, event):
         image = ~numpy.array(self.PIL_image.convert('L'))
         try:
             code = self.fenc.encode_freeman(image)
+            
+            # Plotting the histogram
+            figure = plt.figure()
+            hist = list(map(int, list(code)))
+            plt_hist = plt.hist(hist)
+            plt.savefig('hist.png')
+            self.hist_im = ImageTk.PhotoImage(Image.open('hist.png').resize((280,280), Image.LANCZOS))
+            os.remove('hist.png')
+            self.CanvasHist.create_image(290, 265, image=self.hist_im, anchor=SE)
+            
         except ValueError:
             self.freeman_textbox.delete("1.0", END)
             self.freeman_textbox.insert(END, 'Please redraw the image')
