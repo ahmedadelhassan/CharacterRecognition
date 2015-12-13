@@ -44,12 +44,45 @@ class HMM(object):
         labels = numpy.array([y[1] for y in labeled_sequences])
         return labeled_symbols, labeled_sequences, codes, labels
             
+    def learning_curve(self, dataset, n_iter, train_sizes=numpy.linspace(0.1, 1.0, 5)):
         
-    def training(self, dataset_path, cv=1, n_iter=1):
+        cv_scores = []
+        train_scores = []
+        for i in train_sizes:
+            data = dataset[:int(len(dataset)*i)]
+            
+            cv_score = []
+            t_score = []
+            for j in range(n_iter):
+                cv_score.extend(self.training(dataset, cv=10, n_iter=1))
+                train_score, test_score = self.training(dataset, n_iter=1)
+                t_score.extend(train_score)
+                
+            cv_scores.append(cv_score)
+            train_scores.append(t_score)
+            
+        cv_scores = numpy.array(cv_scores)
+        train_scores = numpy.array(train_scores)
+        
+        print cv_scores.shape
+        print train_scores.shape
+        
+        return train_scores, cv_scores
+    
+    def get_data(self, dataset_path):
         dataset = self.dsr.read_dataset_images(dataset_path)
         freeman_codes_dict = self.fenc.encode_freeman_dataset(dataset)
          
         labeled_symbols, labeled_sequence, codes, labels = self.generate_labelled_sequences(freeman_codes_dict)
+        
+        return labeled_symbols, labeled_sequence, codes, labels
+     
+    def training(self, dataset, cv=1, n_iter=1):
+        
+        if isinstance(dataset, basestring):
+            labeled_symbols, labeled_sequence, codes, labels = self.get_data(dataset)
+        else:
+            labeled_symbols, labeled_sequence, codes, labels  = dataset
         
         self.model = self.learning_model.train(labeled_symbols)
         
