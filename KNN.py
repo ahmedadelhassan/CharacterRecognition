@@ -9,7 +9,10 @@ from DatasetReader import DatasetReader
 from FreemanEncoder import FreemanEncoder
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import cross_validation
+from sklearn.cross_validation import KFold
+from sklearn.cross_validation import train_test_split
 from pyxdameraulevenshtein import damerau_levenshtein_distance as edit_dist
+from sklearn.utils import shuffle
 
 
 class KNN(object):
@@ -172,9 +175,108 @@ class KNN_strings(object):
         return prediction
 
 
-# # knn = KNN_strings(n_neighbors=1)
-# knn = KNN()
-# for x in range(1):
-#     knn.knn_train('I:/eclipse_workspace/CharacterRecognition/teams_dataset', 1.0)
-#     print knn.knn_predict_one('I:/eclipse_workspace/CharacterRecognition/omar_dataset/4/canvas_1.jpg')
-#     print '==================================================================================='
+class KNN_statistic(object):
+    '''
+    classdocs
+    '''
+
+    def __init__(self):
+        '''
+        Constructor
+        '''
+        self.dsr = DatasetReader()
+        self.fenc = FreemanEncoder()
+        self.training_data = []
+
+    def generate_labelled_sequences(self, freeman_codes_dict):
+        labelled_sequences = []
+        codes_list = freeman_codes_dict.items()
+        for tup in codes_list:
+            for code in tup[1]:
+                labelled_sequences.append((tup[0],code))
+
+        return labelled_sequences
+
+
+    def prepare_data(self, arrays_data=[], arrays_labels=[], split=0.2):
+        # Separate data into 2 sets, 1 is training and 1 is test,split is the ratio (the default is 0.20)
+        ad_train, ad_test, al_train, al_test = train_test_split(arrays_data, arrays_labels, test_size=split, random_state=42)
+        return ad_train, ad_test, al_train, al_test
+
+
+    def get_neighbors(self, data, data_label, test_instance, k):
+        # Get the list of nearest neighbors to a test instance
+        distances = []
+        for i in range(len(data)):
+            dist = edit_dist(test_instance, data[i])
+            distances.append((data[i], data_label[i], dist))
+
+        distances.sort(key=operator.itemgetter(2))
+        neighbors = []
+        for x in range(0, k):
+            neighbors.append([distances[x][0], distances[x][1]])
+
+        return neighbors
+
+    def get_label(self, neighbors):
+        # Determine the label of a test instance base on its nearest neighbors
+        labels = {}
+        for neighbor in neighbors:
+            if neighbor[1] not in labels:
+                labels[neighbor[1]] = 1
+            else:
+                labels[neighbor[1]] += 1
+
+        sorted_labels = sorted(labels.items(), key=operator.itemgetter(1), reverse=True)
+
+        return sorted_labels[0][0]
+
+    def evaluation(self, data, data_for_distance_caculation, data_label, data_for_distance_calculation_label, k=3):
+        # Evaluate the accuracy of knn
+        correct_count = 0
+        for instance in range(0, len(data)-1):
+            neighbors = self.get_neighbors(data_for_distance_caculation,data_for_distance_calculation_label, data[instance], k)
+            label = self.get_label(neighbors)
+            if int(label) == int(data_label[instance]):
+                correct_count += 1
+
+        return (float(correct_count)/len(data))
+
+    def knn_train(self, dataset_path, train_test_split=0.2):
+        dataset = self.dsr.read_dataset_images(dataset_path)
+        freeman_codes_dict = self.fenc.encode_freeman_dataset(dataset)
+        _, arrays_data, arrays_label = self.dsr.gen_labelled_arrays(freeman_codes_dict)
+        arrays_data, arrays_label = shuffle(arrays_data, arrays_label)
+        ad_train, ad_test, al_train, al_test = self.prepare_data(arrays_data, arrays_label, split=train_test_split)
+
+        # Cross validation with 5 folds
+        kf = KFold(len(ad_train), 5)
+        result = 0
+        for train_index, test_index in kf:
+            ad_train_kfold, ad_test_kfold = ad_train[train_index], ad_train[test_index]
+            al_train_kfold, al_test_kfold = al_train[train_index], al_train[test_index]
+            result += self.evaluation(ad_test_kfold, ad_train_kfold, al_test_kfold, al_train_kfold, k=2)
+        result_average = result/5
+
+        # Result with the training
+        result_training = self.evaluation(ad_train, ad_train, al_train, al_train, k=2)
+
+        # Result with the test
+        result_test = self.evaluation(ad_test, ad_train, al_test, al_train, k=2)
+        return result_average, result_training, result_test
+
+
+# knn = KNN_strings(n_neighbors=1)
+knn = KNN_statistic()
+results = []
+for x in range(50):
+    result_average, result_training, result_test = knn.knn_train("/home/thovo/PycharmProjects/CharacterRecognition/digits_dataset", 0.2)
+    text = result_average.__str__() + " , " + result_training.__str__() + " , " + result_test.__str__() + "\n"
+    results.append(text)
+
+
+f = open("Results/knn.txt", "w")
+for item in results:
+    f.write(item)
+
+f.close()
