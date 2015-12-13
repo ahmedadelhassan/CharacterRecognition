@@ -13,9 +13,11 @@ import numpy as np
 #from sklearn import datasets, neighbors, linear_model
 from sklearn import cross_validation
 #import matplotlib.pyplot as plt
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, confusion_matrix
 from copy import deepcopy
 import random
+
+
 class ml_alg_base():
     def __init__(self):
         self.reader = DatasetReader()
@@ -47,7 +49,7 @@ class ml_alg_base():
     def TestScore(self, data_x, data_y, estimator):
         pass
     
-    def first_exp(self, data_x, data_y, estimator, num_iter=10, algorithm_name=""):
+    def first_exp(self, data_x, data_y, estimator, num_iter=10, algorithm_name="", confusion_mat=False):
         local_data_x = deepcopy(data_x)
         local_data_y = deepcopy(data_y)
             
@@ -69,6 +71,11 @@ class ml_alg_base():
                 #Test score
                 test_score = estimator.score(X_test, y_test)
                 test_predict = estimator.predict(X_test)
+                
+                # To generate Confusion Matrix, pass arguments num_iter=1 and confusion_mat=True
+                if num_iter==1 and confusion_mat==True:
+                    cm = confusion_matrix(y_test, test_predict)
+                    numpy.savetxt('./Results/'+algorithm_name+'_CM.txt', cm, fmt='%d')
                 
                 print("CV_Accuracy: %0.2f" % (cv_scores))
                 print("train_Accuracy: %0.2f" % (train_score))

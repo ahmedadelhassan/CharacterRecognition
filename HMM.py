@@ -10,6 +10,7 @@ from DatasetReader import DatasetReader
 from FreemanEncoder import FreemanEncoder
 from sklearn import cross_validation
 from nltk import HiddenMarkovModelTrainer
+from nltk.metrics import ConfusionMatrix
 import pickle
 
 class HMM(object):
@@ -23,7 +24,9 @@ class HMM(object):
         '''
         self.dsr = DatasetReader()
         self.fenc = FreemanEncoder()
-        self.learning_model = HiddenMarkovModelTrainer()
+        states = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+        symbols = ['0', '1', '2', '3', '4', '5', '6', '7']
+        self.learning_model = HiddenMarkovModelTrainer(states=states, symbols=symbols)
         self.model = None
         
     def generate_labelled_sequences(self, freeman_codes_dict):
@@ -113,6 +116,12 @@ class HMM(object):
                 training_score.append(self.model.evaluate(train_data))
                 test_score.append(self.model.evaluate(test_data))
                 
+                if n_iter==1:
+                    predict_labels = []
+                    for i in range(len(list(codes[test_index]))):
+                        predicted_states = self.model.tag(list(codes[test_index])[i])
+                        predict_labels.append(predicted_states[0][1])
+                    self.ConfusionMatrix = ConfusionMatrix(list(labels[test_index]), predict_labels)
                 
             return training_score, test_score
     
@@ -137,7 +146,9 @@ class HMM(object):
 # from HMM import HMM
 # hmm = HMM()
 # cv_scores = hmm.training('I:\\eclipse_workspace\\CharacterRecognition\\teams_dataset', cv=10, n_iter=50)
-# train_score, test_score = hmm.training('I:\\eclipse_workspace\\CharacterRecognition\\teams_dataset', n_iter=50)
+# train_score, test_score = hmm.training('I:\\eclipse_workspace\\CharacterRecognition\\teams_dataset', n_iter=1)
+# with open('hmm_confusion_matrix.txt', 'w') as fp:
+#     fp.write(hmm.ConfusionMatrix.__str__())
 #  
 # with open("./Results/hmm.txt", 'w') as fp:
 #     for i in range(len(cv_scores)):
