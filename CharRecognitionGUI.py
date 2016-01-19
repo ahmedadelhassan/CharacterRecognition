@@ -249,13 +249,13 @@ class New_Toplevel_1:
         
         # Initialize Random Forest
         try:
-            pickle.load( open( "./Models/logistic_model.p", "rb" ) )
+            pickle.load( open( "./Models/random_forest.p", "rb" ) )
         except IOError:
             self.RandomForest.training(CharRecognitionGUI_support.training_dataset)
         
         # Initialize SVM
         try:
-            pickle.load( open( "./Models/logistic_model.p", "rb" ) )
+            pickle.load( open( "./Models/svm.p", "rb" ) )
         except IOError:
             self.SVM.training(CharRecognitionGUI_support.training_dataset)
         
@@ -391,7 +391,10 @@ class New_Toplevel_1:
             self.Thumbnail.configure(image=self._image)
                     
         elif self.TCombobox1.get().split(" ")[0] == 'NaiveBayes':
-            image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            image = numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            image[image < 128] = 1
+            image[image >= 128] = 0
+            image[image == 1] = 255
             
             pred = self.NaiveBayes.predict(image)
             pred_thumb = self.thumbnails[pred[0]]
@@ -399,7 +402,10 @@ class New_Toplevel_1:
             self.Thumbnail.configure(image=self._image)
         
         elif self.TCombobox1.get().split(" ")[0] == 'RandomForest':
-            image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            image = numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            image[image < 128] = 1
+            image[image >= 128] = 0
+            image[image == 1] = 255
             
             pred = self.RandomForest.predict(image)
             pred_thumb = self.thumbnails[pred[0]]
@@ -407,7 +413,10 @@ class New_Toplevel_1:
             self.Thumbnail.configure(image=self._image)
         
         elif self.TCombobox1.get().split(" ")[0] == 'SVM':
-            image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            image = numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            image[image < 128] = 1
+            image[image >= 128] = 0
+            image[image == 1] = 255
             
             pred = self.SVM.predict(image)
             pred_thumb = self.thumbnails[pred[0]]
@@ -415,7 +424,10 @@ class New_Toplevel_1:
             self.Thumbnail.configure(image=self._image)
         
         elif self.TCombobox1.get().split(" ")[0] == 'LogisticReg':
-            image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            image = numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            image[image < 128] = 1
+            image[image >= 128] = 0
+            image[image == 1] = 255
             
             pred = self.LogisticReg.predict(image)
             pred_thumb = self.thumbnails[pred[0]]
@@ -423,7 +435,10 @@ class New_Toplevel_1:
             self.Thumbnail.configure(image=self._image)
             
         elif self.TCombobox1.get().split(" ")[0] == 'AdaBoost':
-            image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            image = numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            image[image < 128] = 1
+            image[image >= 128] = 0
+            image[image == 1] = 255
             
             pred = self.AdaBoost.predict(image)
             pred_thumb = self.thumbnails[pred[0]]
@@ -431,7 +446,10 @@ class New_Toplevel_1:
             self.Thumbnail.configure(image=self._image)
             
         elif self.TCombobox1.get().split(" ")[0] == 'GradientBoosting':
-            image = ~numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            image = numpy.array(self.PIL_image.convert('L').resize((100,100), Image.LANCZOS))
+            image[image < 128] = 1
+            image[image >= 128] = 0
+            image[image == 1] = 255
             
             pred = self.GBRT.predict(image)
             pred_thumb = self.thumbnails[pred[0]]
